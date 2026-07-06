@@ -1,0 +1,609 @@
+/* Админ-панель «Крылья Кавказа» — светлая тема, независимая от темы сайта.
+   Все переменные и классы scoped под .admin-shell. */
+
+.admin-shell {
+  --abg: #f5f4ef;
+  --asurf: #ffffff;
+  --asurf-2: #faf9f5;
+  --aline: #e6e3d9;
+  --atxt: #23262c;
+  --atxt-2: #414550;
+  --amut: #8a8f99;
+  --agold: #b07f2a;
+  --agold-soft: rgba(176, 127, 42, 0.12);
+  --agreen: #3f8a5b;
+  --ared: #b5462f;
+  --ablue: #3a6b9a;
+
+  background: var(--abg);
+  color: var(--atxt);
+  min-height: 100vh;
+  font-family: var(--t-font);
+  display: flex;
+}
+.admin-shell h1,
+.admin-shell h2,
+.admin-shell h3 {
+  color: var(--atxt);
+  font-family: var(--t-font);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.admin-shell a {
+  color: inherit;
+}
+
+/* ───── Сайдбар ───── */
+.admin-sidebar {
+  width: 248px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid var(--aline);
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 20px;
+}
+.admin-brand img {
+  height: 34px;
+  mix-blend-mode: multiply;
+}
+.admin-navitem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font: 500 14.5px/1 var(--t-font);
+  background: transparent;
+  color: var(--atxt-2);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.admin-navitem:hover {
+  background: var(--asurf-2);
+}
+.admin-navitem.active {
+  background: var(--agold-soft);
+  color: #8a6320;
+  font-weight: 600;
+}
+.admin-navitem .ico {
+  font-size: 16px;
+  width: 18px;
+  text-align: center;
+}
+.admin-user {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid var(--aline);
+}
+.admin-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e8e2d2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a6320;
+  flex-shrink: 0;
+}
+
+/* ───── Экран входа (вне .admin-shell — задаёт переменные сам) ───── */
+.admin-auth {
+  --abg: #f5f4ef;
+  --asurf: #ffffff;
+  --asurf-2: #faf9f5;
+  --aline: #e6e3d9;
+  --atxt: #23262c;
+  --atxt-2: #414550;
+  --amut: #8a8f99;
+  --agold: #b07f2a;
+  --agold-soft: rgba(176, 127, 42, 0.12);
+  --agreen: #3f8a5b;
+  --ared: #b5462f;
+  --ablue: #3a6b9a;
+
+  min-height: 100vh;
+  background: var(--abg);
+  color: var(--atxt);
+  font-family: var(--t-font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ───── Контент ───── */
+.admin-main {
+  flex: 1;
+  min-width: 0;
+}
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 32px;
+  border-bottom: 1px solid var(--aline);
+  background: #fff;
+  flex-wrap: wrap;
+}
+.admin-topbar h1 {
+  font-size: 26px;
+  margin: 0;
+}
+.admin-body {
+  padding: 32px;
+}
+@media (max-width: 720px) {
+  .admin-body {
+    padding: 18px;
+  }
+  .admin-topbar {
+    padding: 16px 18px;
+  }
+}
+
+/* ───── Карточки ───── */
+.acard {
+  background: #fff;
+  border: 1px solid var(--aline);
+  border-radius: 14px;
+  padding: 22px;
+}
+.acard-pad0 {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ───── Поля ───── */
+.alabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--atxt);
+  margin-bottom: 6px;
+}
+.ahint {
+  color: var(--amut);
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+.ainput,
+.atextarea,
+.aselect {
+  width: 100%;
+  background: var(--asurf);
+  border: 1px solid var(--aline);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--atxt);
+  font-family: var(--t-font);
+  outline: none;
+  box-sizing: border-box;
+}
+.atextarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+.ainput:focus,
+.atextarea:focus,
+.aselect:focus {
+  border-color: var(--agold);
+  box-shadow: 0 0 0 3px rgba(176, 127, 42, 0.15);
+}
+.ainput.err,
+.atextarea.err,
+.aselect.err {
+  border-color: var(--ared);
+}
+.aerr {
+  color: var(--ared);
+  font-size: 12.5px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ───── Кнопки ───── */
+.abtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: 600 13px/1 var(--d-font);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.abtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.abtn-gold {
+  background: var(--agold);
+  color: #fff;
+  border-color: var(--agold);
+}
+.abtn-gold:hover:not(:disabled) {
+  background: #9a6e22;
+}
+.abtn-ghost {
+  background: #f0eee7;
+  border-color: var(--aline);
+  color: var(--atxt);
+}
+.abtn-ghost:hover {
+  background: #e9e6dc;
+}
+.abtn-danger {
+  background: transparent;
+  color: var(--ared);
+  border-color: transparent;
+}
+.abtn-sm {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+/* ───── Таблицы ───── */
+.atable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.atable th {
+  text-align: left;
+  background: var(--asurf-2);
+  padding: 13px 18px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amut);
+  font-weight: 600;
+}
+.atable td {
+  padding: 12px 18px;
+  border-top: 1px solid var(--aline);
+  vertical-align: middle;
+}
+.atable tr:hover td {
+  background: #fcfbf8;
+}
+.alink {
+  color: #8a6320;
+  font-size: 13px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.alink-danger {
+  color: var(--ared);
+}
+
+/* Превью фото в таблице */
+.athumb {
+  width: 56px;
+  height: 40px;
+  border-radius: 7px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ───── Переключатель статуса ───── */
+.atoggle {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  background: #cbd0d8;
+  flex-shrink: 0;
+}
+.atoggle.on {
+  background: var(--agreen);
+}
+.atoggle .knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.atoggle.on .knob {
+  left: 21px;
+}
+
+/* ───── Бейджи (статусы заявок и пр.) ───── */
+.abadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 600 11.5px/1 var(--t-font);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+.abadge-blue {
+  background: rgba(58, 107, 154, 0.12);
+  color: var(--ablue);
+}
+.abadge-green {
+  background: rgba(63, 138, 91, 0.14);
+  color: var(--agreen);
+}
+.abadge-gold {
+  background: var(--agold-soft);
+  color: #8a6320;
+}
+.abadge-gray {
+  background: #eceae3;
+  color: #6b7280;
+}
+.abadge-amber {
+  background: rgba(176, 127, 42, 0.14);
+  color: #8a6320;
+}
+.abadge-purple {
+  background: rgba(132, 102, 168, 0.16);
+  color: #6b4f9a;
+}
+.abadge-terra {
+  background: rgba(181, 87, 60, 0.14);
+  color: #a04a2e;
+}
+.abadge-red {
+  background: rgba(181, 70, 47, 0.12);
+  color: var(--ared);
+}
+
+/* ───── Загрузка файлов ───── */
+.adrop {
+  border: 1.5px dashed var(--aline);
+  border-radius: 10px;
+  padding: 26px;
+  text-align: center;
+  color: var(--amut);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.adrop:hover {
+  border-color: var(--agold);
+  background: var(--asurf-2);
+}
+.athumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.athumb-box {
+  position: relative;
+  width: 96px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--aline);
+}
+.athumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.athumb-box .rm {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+.athumb-box .cover-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--agold);
+  color: #fff;
+  font-size: 10px;
+  text-align: center;
+  padding: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ───── Сетка форм ───── */
+.agrid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.afield {
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .agrid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 1024px) {
+  .agrid-ai {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ───── Тост уведомлений ───── */
+.atoast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  background: var(--atxt);
+  color: #fff;
+  padding: 13px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  animation: atoast-in 0.2s ease;
+}
+.atoast.ok {
+  background: var(--agreen);
+}
+.atoast.err {
+  background: var(--ared);
+}
+@keyframes atoast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ───── Чат-тест ───── */
+.achat-msgs {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 220px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.achat-bubble {
+  max-width: 84%;
+  padding: 9px 13px;
+  border-radius: 13px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.achat-bubble.me {
+  align-self: flex-end;
+  background: var(--agold);
+  color: #fff;
+}
+.achat-bubble.bot {
+  align-self: flex-start;
+  background: #f0eee7;
+  color: #2a2d33;
+}
+
+/* ───── Модалка ───── */
+.amodal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(20, 22, 26, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.amodal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3);
+  padding: 28px;
+}
+
+/* ───── Rich-text редактор (Tiptap) ───── */
+.rte-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--aline);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  background: var(--asurf-2);
+}
+.rte-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--atxt-2);
+}
+.rte-btn:hover {
+  background: #ecece4;
+}
+.rte-btn.active {
+  background: var(--agold-soft);
+  color: #8a6320;
+  border-color: rgba(176, 127, 42, 0.3);
+}
+.rte-content {
+  border: 1px solid var(--aline);
+  border-radius: 0 0 8px 8px;
+  padding: 14px;
+  min-height: 160px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--atxt);
+}
+.rte-content:focus {
+  outline: none;
+  border-color: var(--agold);
+}
+.rte-content p {
+  margin: 0 0 10px;
+}
+.rte-content h3,
+.rte-content h4 {
+  margin: 14px 0 8px;
+  font-weight: 700;
+}
+.rte-content ul,
+.rte-content ol {
+  padding-left: 22px;
+  margin: 0 0 10px;
+}
+.rte-content:empty::before {
+  content: attr(data-placeholder);
+  color: var(--amut);
+}

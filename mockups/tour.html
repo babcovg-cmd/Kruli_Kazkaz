@@ -1,0 +1,354 @@
+<!-- @dsCard group="Website (Dark)" viewport="1280x900" name="Mockup — Single tour" -->
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сулакский каньон — Крылья Кавказа</title>
+<link rel="stylesheet" href="theme.css">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('kk-theme')||'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+</head><body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">
+/*__SHARED__*/
+/* global React */
+const { useState } = React;
+const A = 'assets/';
+function ThemeToggle(){
+  const [t,setT]=useState(()=>((typeof document!=='undefined'&&document.documentElement.dataset.theme)||'dark'));
+  const toggle=()=>{const n=t==='dark'?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('kk-theme',n)}catch(e){}setT(n);};
+  return (<button onClick={toggle} aria-label="Сменить тему" title="Светлая / тёмная тема" style={{width:40,height:40,borderRadius:'50%',border:'1px solid var(--line-2)',background:'transparent',color:'var(--txt)',cursor:'pointer',fontSize:16,display:'inline-flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all .15s'}}>{t==='dark'?'☀':'☾'}</button>);
+}
+
+
+/* ───────── Shared tour data ───────── */
+const TOURS = [
+  { id:'sulak', title:'Сулакский каньон', cat:'Однодневные', badge:'Купить', badgeClass:'b-green',
+    scene:'s-canyon', duration:'1 день', price:'4 900', date:'каждую субботу', diff:'Лёгкая', age:'0+',
+    desc:'Самый глубокий каньон Европы, катер по бирюзовой Сулакской воде и форелевое хозяйство.' },
+  { id:'gunib', title:'Гуниб и Салтинский водопад', cat:'Экскурсии', badge:'Купить', badgeClass:'b-green',
+    scene:'s-dusk', duration:'1 день', price:'5 600', date:'вт, чт, сб', diff:'Лёгкая', age:'6+',
+    desc:'Подземный водопад в Салтинской теснине и виды на Гунибское плато.' },
+  { id:'goor', title:'Старый Гоор и Карадахская теснина', cat:'Сборные туры', badge:'Сборный', badgeClass:'b-blue',
+    scene:'s-village', duration:'2 дня / 1 ночь', price:'16 200', date:'14 июля', diff:'Средняя', age:'12+',
+    desc:'Башни заброшенного аула Гоор над облаками и узкая Карадахская теснина.' },
+  { id:'shalbuzdag', title:'Восхождение на Шалбуздаг', cat:'Спортивный туризм', badge:'Под запрос', badgeClass:'b-amber',
+    scene:'s-peak', duration:'4 дня / 3 ночи', price:'38 900', date:'по запросу', diff:'Сложная', age:'18+',
+    desc:'Священная вершина 4142 м — трекинг с опытными гидами и ночёвкой в горах.' },
+  { id:'karmadon', title:'Кармадонское ущелье', cat:'Тематические туры', badge:'Тематический', badgeClass:'b-purple',
+    scene:'s-night', duration:'3 дня / 2 ночи', price:'29 500', date:'2 августа', diff:'Средняя', age:'12+',
+    desc:'Северная Осетия: ледник Колка, древние склепы Даргавса и башенные комплексы.' },
+  { id:'digoria', title:'Дигория и Цейское ущелье', cat:'Сборные туры', badge:'Сборный', badgeClass:'b-blue',
+    scene:'s-dawn', duration:'5 дней / 4 ночи', price:'46 700', date:'19 августа', diff:'Средняя', age:'12+',
+    desc:'Альпийские луга, водопады Галдоридон и ледники Цейского ущелья.' },
+  { id:'samur', title:'Самурский лес и Дербент', cat:'Экскурсии', badge:'Купить', badgeClass:'b-green',
+    scene:'s-village', duration:'2 дня / 1 ночь', price:'13 400', date:'каждое вс', diff:'Лёгкая', age:'0+',
+    desc:'Единственный лиановый лес России и древнейший город страны — крепость Нарын-Кала.' },
+  { id:'custom', title:'Индивидуальный маршрут', cat:'Туры под запрос', badge:'Под запрос', badgeClass:'b-amber',
+    scene:'s-dusk', duration:'обсуждается', price:'по запросу', date:'ваши даты', diff:'Любая', age:'—',
+    desc:'Составим программу под ваши интересы, темп и состав группы.' },
+];
+
+const CATEGORIES = [
+  { t:'Однодневные туры', d:'Каньоны, водопады и аулы за один выезд', glyph:'☀' },
+  { t:'Экскурсии', d:'Города, крепости и культурное наследие', glyph:'◈' },
+  { t:'Сборные туры', d:'Многодневные маршруты в малых группах', glyph:'⛰' },
+  { t:'Тематические туры', d:'Гастрономия, история, ремёсла', glyph:'✦' },
+  { t:'Спортивный туризм', d:'Восхождения, треккинг, экспедиции', glyph:'▲' },
+  { t:'Туры под запрос', d:'Индивидуальные программы под вас', glyph:'✎' },
+];
+
+/* ───────── Logo ───────── */
+function Logo({ size=40, sub=true }){
+  return (
+    <a href="index.html" style={{display:'flex',alignItems:'center',gap:12}}>
+      <img src={A+'emblem-gold.png'} alt="" style={{height:size}}/>
+      <span style={{lineHeight:1}}>
+        <span style={{display:'block',fontFamily:'var(--d-font)',textTransform:'uppercase',fontWeight:700,letterSpacing:'.04em',fontSize:size*0.45,color:'var(--txt)'}}>Крылья Кавказа</span>
+        {sub && <span style={{display:'block',fontFamily:'var(--d-font)',textTransform:'uppercase',letterSpacing:'.22em',fontSize:size*0.21,color:'var(--gold)',marginTop:4}}>Туристическое агентство</span>}
+      </span>
+    </a>
+  );
+}
+
+/* ───────── Header ───────── */
+function Header({ active }){
+  const [open,setOpen]=useState(false);
+  const links=[['Туры','catalog.html'],['Направления','#'],['О компании','#'],['Отзывы','#'],['Контакты','#']];
+  return (
+    <header style={{position:'sticky',top:0,zIndex:40,background:'var(--header-bg)',backdropFilter:'blur(14px)',borderBottom:'1px solid var(--line)'}}>
+      <div className="wrap" style={{display:'flex',alignItems:'center',gap:24,height:74}}>
+        <Logo size={38}/>
+        <nav className="desk-nav" style={{display:'flex',gap:28,marginLeft:'auto'}}>
+          {links.map(([l,h])=>(
+            <a key={l} href={h} style={{fontSize:14,fontWeight:500,color: l==='Туры'&&active==='catalog'?'var(--gold)':'var(--txt-2)',transition:'color .15s'}}
+              onMouseEnter={e=>e.target.style.color='var(--gold)'} onMouseLeave={e=>e.target.style.color=(l==='Туры'&&active==='catalog')?'var(--gold)':'var(--txt-2)'}>{l}</a>
+          ))}
+        </nav>
+        <ThemeToggle/>
+        <a href="catalog.html" className="btn btn-gold btn-sm desk-cta">Смотреть туры</a>
+        <button className="burger" onClick={()=>setOpen(true)} aria-label="Меню"
+          style={{display:'none',background:'none',border:'none',cursor:'pointer',flexDirection:'column',gap:5,padding:6}}>
+          <span style={{width:24,height:2,background:'var(--txt)'}}/><span style={{width:24,height:2,background:'var(--txt)'}}/><span style={{width:24,height:2,background:'var(--txt)'}}/>
+        </button>
+      </div>
+      {open && (
+        <div style={{position:'fixed',inset:0,zIndex:60,background:'var(--overlay-bg)',display:'flex',flexDirection:'column',padding:'28px 24px'}}>
+          <div style={{display:'flex',alignItems:'center'}}>
+            <Logo size={36} sub={false}/>
+            <button onClick={()=>setOpen(false)} aria-label="Закрыть" style={{marginLeft:'auto',background:'none',border:'none',color:'var(--txt)',fontSize:30,cursor:'pointer',lineHeight:1}}>×</button>
+          </div>
+          <nav style={{display:'flex',flexDirection:'column',gap:6,marginTop:40}}>
+            {links.map(([l,h])=><a key={l} href={h} onClick={()=>setOpen(false)} style={{fontFamily:'var(--d-font)',textTransform:'uppercase',fontSize:30,letterSpacing:'.03em',color:'var(--txt)',padding:'10px 0',borderBottom:'1px solid var(--line)'}}>{l}</a>)}
+          </nav>
+          <a href="catalog.html" className="btn btn-gold" style={{marginTop:28}}>Смотреть туры</a>
+        </div>
+      )}
+    </header>
+  );
+}
+
+/* ───────── Footer ───────── */
+function Footer(){
+  return (
+    <footer style={{background:'var(--bg-2)',borderTop:'1px solid var(--line)',marginTop:0}}>
+      <div className="wrap" style={{padding:'56px 24px 28px',display:'grid',gridTemplateColumns:'1.6fr 1fr 1fr 1.2fr',gap:32}}>
+        <div>
+          <Logo size={40}/>
+          <p className="muted" style={{maxWidth:300,marginTop:18,fontSize:14}}>Туроператор по Дагестану и республикам Северного Кавказа. Авторские туры с 2005 года.</p>
+        </div>
+        <FCol title="Туры" items={['Однодневные','Сборные','Тематические','Спортивные']}/>
+        <FCol title="Компания" items={['О нас','Отзывы','Блог','Вакансии']}/>
+        <div>
+          <h4 style={{fontSize:13,letterSpacing:'.16em',color:'var(--txt)',marginBottom:14}}>Контакты</h4>
+          <p style={{fontSize:14,color:'var(--txt-2)',lineHeight:1.9,margin:0}}>
+            г. Каспийск, Республика Дагестан<br/>
+            <a href="#" className="mono" style={{color:'var(--gold-2)'}}>+7 (928) 000-00-00</a><br/>
+            <span style={{display:'inline-flex',gap:12,marginTop:8}}>
+              <a href="#" style={{color:'var(--txt-2)'}}>WhatsApp</a>
+              <a href="#" style={{color:'var(--txt-2)'}}>Telegram</a>
+            </span>
+          </p>
+        </div>
+      </div>
+      <div className="wrap" style={{padding:'16px 24px 28px',borderTop:'1px solid var(--line)',display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:10}}>
+        <span className="mono muted" style={{fontSize:12}}>РТО № В031-00161-77/01570006</span>
+        <span className="muted" style={{fontSize:12}}>© 2005–2026 Крылья Кавказа. Все права защищены.</span>
+      </div>
+    </footer>
+  );
+}
+function FCol({title,items}){
+  return (
+    <div>
+      <h4 style={{fontSize:13,letterSpacing:'.16em',color:'var(--txt)',marginBottom:14}}>{title}</h4>
+      {items.map(i=><a key={i} href="catalog.html" style={{display:'block',fontSize:14,color:'var(--txt-2)',lineHeight:2.2}}>{i}</a>)}
+    </div>
+  );
+}
+
+/* ───────── Scene (photo stand-in) ───────── */
+function Scene({ cls, label, children, style }){
+  return (
+    <div className={'scene '+cls} style={style}>
+      <div className="ridge"/>
+      {children}
+      {label && <span className="label">{label}</span>}
+    </div>
+  );
+}
+
+/* ───────── Tour card ───────── */
+function TourCard({ t, href='tour.html', cta }){
+  const isBuy = t.badge==='Купить';
+  const ctaLabel = cta || (isBuy ? 'Купить' : 'Под запрос');
+  return (
+    <a href={href} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-6px)';e.currentTarget.querySelector('.tc').style.boxShadow='var(--sh-card)';}}
+       onMouseLeave={e=>{e.currentTarget.style.transform='none';e.currentTarget.querySelector('.tc').style.boxShadow='none';}}
+       style={{display:'block',transition:'transform .25s var(--ease)'}}>
+      <article className="tc" style={{background:'var(--surface)',border:'1px solid var(--line)',borderRadius:'var(--r-lg)',overflow:'hidden',transition:'box-shadow .25s'}}>
+        <Scene cls={t.scene} label="фото-заглушка" style={{height:188}}>
+          <span className={'badge '+t.badgeClass} style={{position:'absolute',top:12,left:12,zIndex:3}}>{t.badge}</span>
+        </Scene>
+        <div style={{padding:18,display:'flex',flexDirection:'column',gap:10}}>
+          <h3 style={{fontSize:21,color:'var(--txt)'}}>{t.title}</h3>
+          <p className="muted" style={{fontSize:13.5,lineHeight:1.5,margin:0,minHeight:42}}>{t.desc}</p>
+          <div style={{display:'flex',gap:14,fontSize:12.5,color:'var(--txt-3)',flexWrap:'wrap'}}>
+            <span>◷ {t.duration}</span><span>◆ {t.diff}</span><span>⊙ {t.date}</span>
+          </div>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:6,paddingTop:14,borderTop:'1px solid var(--line)'}}>
+            <span><span className="muted" style={{fontSize:12}}>от </span><span className="mono" style={{fontSize:20,fontWeight:500,color:'var(--gold-2)'}}>{t.price}{t.price!=='по запросу'?' ₽':''}</span></span>
+            <span className={'btn btn-sm '+(isBuy?'btn-green':'btn-gold')}>{ctaLabel}</span>
+          </div>
+        </div>
+      </article>
+    </a>
+  );
+}
+
+/* ───────── AI consultant widget ───────── */
+function AIWidget(){
+  const [open,setOpen]=useState(false);
+  const [msgs,setMsgs]=useState([{from:'bot',text:'Здравствуйте! Я подберу тур по Кавказу. Куда хотите поехать и на сколько дней?'}]);
+  const [val,setVal]=useState('');
+  const send=()=>{ if(!val.trim())return;
+    const q=val.trim();
+    setMsgs(m=>[...m,{from:'me',text:q},{from:'bot',text:'Отличный выбор! Под ваш запрос подойдёт «Сулакский каньон» (1 день, от 4 900 ₽) и «Гуниб» (1 день, от 5 600 ₽). Показать программу?'}]);
+    setVal('');
+  };
+  return (
+    <div style={{position:'fixed',right:24,bottom:24,zIndex:70,display:'flex',flexDirection:'column',alignItems:'flex-end',gap:14}}>
+      {open && (
+        <div style={{width:340,maxWidth:'calc(100vw - 48px)',background:'var(--surface)',border:'1px solid var(--line-2)',borderRadius:'var(--r-lg)',boxShadow:'var(--sh-card)',overflow:'hidden'}}>
+          <div style={{display:'flex',alignItems:'center',gap:10,padding:'14px 16px',background:'var(--surface-2)',borderBottom:'1px solid var(--line)'}}>
+            <span style={{width:34,height:34,borderRadius:'50%',background:'var(--gold-soft)',display:'flex',alignItems:'center',justifyContent:'center'}}><img src={A+'emblem-gold.png'} style={{height:22}}/></span>
+            <span style={{lineHeight:1.2}}><b style={{fontSize:14}}>ИИ-консультант</b><br/><span className="muted" style={{fontSize:11}}>обычно отвечает сразу</span></span>
+            <button onClick={()=>setOpen(false)} style={{marginLeft:'auto',background:'none',border:'none',color:'var(--txt-3)',fontSize:22,cursor:'pointer',lineHeight:1}}>×</button>
+          </div>
+          <div style={{padding:16,display:'flex',flexDirection:'column',gap:10,maxHeight:300,overflowY:'auto'}}>
+            {msgs.map((m,i)=>(
+              <div key={i} style={{alignSelf:m.from==='me'?'flex-end':'flex-start',maxWidth:'82%',padding:'9px 13px',borderRadius:14,fontSize:13.5,lineHeight:1.45,
+                background:m.from==='me'?'var(--gold)':'var(--surface-3)',color:m.from==='me'?'#1a1407':'var(--txt)',
+                borderBottomRightRadius:m.from==='me'?4:14,borderBottomLeftRadius:m.from==='me'?14:4}}>{m.text}</div>
+            ))}
+          </div>
+          <div style={{display:'flex',gap:8,padding:12,borderTop:'1px solid var(--line)'}}>
+            <input value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="Напишите сообщение…"
+              style={{flex:1,background:'var(--surface-2)',border:'1px solid var(--line)',borderRadius:'var(--r-pill)',padding:'10px 14px',color:'var(--txt)',fontSize:13,outline:'none',fontFamily:'var(--t-font)'}}/>
+            <button onClick={send} className="btn btn-gold btn-sm" style={{padding:'0 16px'}}>→</button>
+          </div>
+        </div>
+      )}
+      <button onClick={()=>setOpen(o=>!o)} style={{display:'inline-flex',alignItems:'center',gap:10,background:'var(--surface-2)',border:'1px solid var(--line-2)',borderRadius:'var(--r-pill)',padding:'12px 18px 12px 14px',cursor:'pointer',boxShadow:'var(--sh-card)',color:'var(--txt)'}}>
+        <span style={{width:30,height:30,borderRadius:'50%',background:'var(--gold)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>💬</span>
+        <span style={{fontFamily:'var(--d-font)',textTransform:'uppercase',letterSpacing:'.06em',fontSize:13,fontWeight:600}}>Спросить консультанта</span>
+      </button>
+    </div>
+  );
+}
+
+Object.assign(window,{ TOURS, CATEGORIES, Logo, Header, Footer, Scene, TourCard, AIWidget });
+
+</script>
+<script type="text/babel">
+const { Header, Footer, Scene, AIWidget } = window;
+const { useState } = React;
+
+const TABS=['Описание','Программа','Условия','Отзывы'];
+const PROGRAM=[
+  {d:'День 1',t:'Выезд и смотровая площадка',x:'Сбор в Махачкале, переезд к Сулакскому каньону, обзорная точка над бирюзовой водой.'},
+  {d:'День 1',t:'Катер по каньону',x:'Прогулка на катере вдоль отвесных стен глубиной до 1920 метров.'},
+  {d:'День 1',t:'Форелевое хозяйство и обед',x:'Дегустация свежей форели, дагестанская кухня, возвращение к вечеру.'},
+];
+const REVIEWS=[
+  {n:'Анна М.',r:5,t:'Лучший день отпуска! Каньон невероятный, гид Магомед знает всё.'},
+  {n:'Игорь и Лена',r:5,t:'Всё чётко по программе, катер — отдельный восторг. Спасибо!'},
+];
+
+function TourPage(){
+  const [tab,setTab]=useState('Описание');
+  const [people,setPeople]=useState(2);
+  return (
+    <div>
+      <Header/>
+      <Scene cls="s-canyon" label="фото: Сулакский каньон" style={{height:420,display:'flex',alignItems:'flex-end'}}>
+        <div className="wrap" style={{position:'relative',zIndex:3,paddingBottom:36,width:'100%'}}>
+          <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap'}}>
+            <span className="badge b-green">Купить онлайн</span>
+            <span className="badge b-terra">Однодневный</span>
+            <span className="badge b-blue">0+</span>
+          </div>
+          <h1 style={{fontSize:'clamp(34px,5.5vw,56px)',color:'#F4F1E7',margin:0,maxWidth:760}}>Сулакский каньон</h1>
+          <p style={{color:'rgba(244,241,231,0.85)',fontSize:17,margin:'12px 0 0'}}>Дагестан · самый глубокий каньон Европы</p>
+        </div>
+      </Scene>
+
+      <div className="wrap tour-layout" style={{padding:'48px 24px 80px',display:'grid',gridTemplateColumns:'1fr 360px',gap:40}}>
+        <main>
+          <div style={{display:'flex',gap:4,borderBottom:'1px solid var(--line)',marginBottom:28,flexWrap:'wrap'}}>
+            {TABS.map(t=>(
+              <button key={t} onClick={()=>setTab(t)} style={{font:'600 15px/1 var(--d-font)',textTransform:'uppercase',letterSpacing:'.04em',padding:'14px 18px',background:'none',border:'none',cursor:'pointer',
+                color:tab===t?'var(--gold-2)':'var(--txt-3)',borderBottom:`2px solid ${tab===t?'var(--gold)':'transparent'}`,marginBottom:-1}}>{t}</button>
+            ))}
+          </div>
+
+          {tab==='Описание' && (
+            <div style={{display:'flex',flexDirection:'column',gap:16,color:'var(--txt-2)',fontSize:16,lineHeight:1.7,maxWidth:660}}>
+              <p style={{margin:0}}>Сулакский каньон — одно из самых впечатляющих мест Дагестана и самый глубокий каньон Европы (до 1920 м). За один насыщенный день вы увидите бирюзовую воду с высоты птичьего полёта, прокатитесь на катере вдоль отвесных стен и попробуете свежую форель.</p>
+              <p style={{margin:0}}>Тур подходит для семей с детьми и не требует подготовки. Всё включено: трансфер из Махачкалы, гид, катер и обед.</p>
+              <div style={{display:'flex',gap:28,flexWrap:'wrap',marginTop:8}}>
+                {[['Длительность','1 день'],['Сложность','Лёгкая'],['Группа','до 16 человек'],['Возраст','0+']].map(([k,v])=>(
+                  <div key={k}><div className="muted" style={{fontSize:12,textTransform:'uppercase',letterSpacing:'.1em'}}>{k}</div><div style={{color:'var(--txt)',fontSize:18,fontFamily:'var(--d-font)',marginTop:4}}>{v}</div></div>
+                ))}
+              </div>
+            </div>
+          )}
+          {tab==='Программа' && (
+            <div style={{display:'flex',flexDirection:'column',gap:14}}>
+              {PROGRAM.map((p,i)=>(
+                <div key={i} style={{display:'flex',gap:16,background:'var(--surface)',border:'1px solid var(--line)',borderRadius:'var(--r-md)',padding:18}}>
+                  <span className="badge b-amber" style={{height:'fit-content'}}>{p.d}</span>
+                  <div><h4 style={{fontSize:18,color:'var(--txt)',marginBottom:6}}>{p.t}</h4><p className="muted" style={{margin:0,fontSize:14,lineHeight:1.5}}>{p.x}</p></div>
+                </div>
+              ))}
+            </div>
+          )}
+          {tab==='Условия' && (
+            <ul style={{color:'var(--txt-2)',fontSize:16,lineHeight:1.9,paddingLeft:20,maxWidth:620}}>
+              <li>Включено: трансфер, гид, катер, обед, страховка.</li>
+              <li>Не включено: личные расходы и сувениры.</li>
+              <li>Оплата: онлайн на сайте или безналичный расчёт по договору.</li>
+              <li>Отмена: бесплатно за 3 дня до выезда.</li>
+            </ul>
+          )}
+          {tab==='Отзывы' && (
+            <div style={{display:'flex',flexDirection:'column',gap:14,maxWidth:660}}>
+              {REVIEWS.map((r,i)=>(
+                <div key={i} style={{background:'var(--surface)',border:'1px solid var(--line)',borderRadius:'var(--r-md)',padding:18}}>
+                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><b style={{color:'var(--txt)'}}>{r.n}</b><span style={{color:'var(--gold)'}}>{'★'.repeat(r.r)}</span></div>
+                  <p className="muted" style={{margin:0,fontSize:15}}>{r.t}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <h3 style={{fontSize:24,color:'var(--txt)',margin:'48px 0 18px'}}>Галерея</h3>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12}}>
+            {['s-canyon','s-dusk','s-peak','s-dawn','s-night','s-village'].map((s,i)=>(
+              <Scene key={i} cls={s} style={{height:130,borderRadius:'var(--r-md)'}}/>
+            ))}
+          </div>
+        </main>
+
+        <aside className="booking-sticky" style={{position:'sticky',top:90,alignSelf:'start'}}>
+          <div style={{background:'var(--surface)',border:'1px solid var(--line-2)',borderRadius:'var(--r-lg)',padding:24,boxShadow:'var(--sh-card)'}}>
+            <div style={{display:'flex',alignItems:'baseline',gap:8,marginBottom:4}}>
+              <span className="mono" style={{fontSize:30,fontWeight:500,color:'var(--gold-2)'}}>4 900 ₽</span>
+              <span className="muted" style={{fontSize:13}}>/ человек</span>
+            </div>
+            <p className="muted" style={{fontSize:13,margin:'0 0 18px'}}>Ближайший выезд — суббота</p>
+            <label style={{display:'block',fontSize:13,color:'var(--txt-2)',marginBottom:6}}>Дата выезда</label>
+            <select style={selStyle}><option>Сб, 12 июля</option><option>Сб, 19 июля</option><option>Сб, 26 июля</option></select>
+            <label style={{display:'block',fontSize:13,color:'var(--txt-2)',margin:'14px 0 6px'}}>Количество человек</label>
+            <div style={{display:'flex',alignItems:'center',gap:0,border:'1px solid var(--line)',borderRadius:'var(--r-pill)',width:'fit-content',overflow:'hidden'}}>
+              <button onClick={()=>setPeople(p=>Math.max(1,p-1))} style={stepBtn}>−</button>
+              <span className="mono" style={{width:48,textAlign:'center',color:'var(--txt)'}}>{people}</span>
+              <button onClick={()=>setPeople(p=>p+1)} style={stepBtn}>+</button>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',margin:'20px 0',paddingTop:16,borderTop:'1px solid var(--line)'}}>
+              <span className="muted">Итого</span><span className="mono" style={{fontSize:20,color:'var(--txt)'}}>{(4900*people).toLocaleString('ru')} ₽</span>
+            </div>
+            <button className="btn btn-green" style={{width:'100%'}}>Купить</button>
+            <button className="btn btn-ghost" style={{width:'100%',marginTop:10}}>Оставить заявку</button>
+            <p className="muted" style={{fontSize:11,textAlign:'center',margin:'14px 0 0',lineHeight:1.4}}>Безопасная оплата · возврат по договору</p>
+          </div>
+        </aside>
+      </div>
+      <Footer/><AIWidget/>
+    </div>
+  );
+}
+const selStyle={width:'100%',background:'var(--surface-2)',border:'1px solid var(--line)',borderRadius:'var(--r-sm)',padding:'11px 12px',color:'var(--txt)',fontSize:14,fontFamily:'var(--t-font)'};
+const stepBtn={width:42,height:40,background:'var(--surface-2)',border:'none',color:'var(--txt)',fontSize:20,cursor:'pointer'};
+ReactDOM.createRoot(document.getElementById('root')).render(<TourPage/>);
+</script>
+</body></html>

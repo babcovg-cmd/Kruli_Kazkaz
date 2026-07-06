@@ -1,0 +1,139 @@
+// Prisma schema — «Крылья Кавказа»
+// БД: SQLite (один файл, простой бэкап). Легко мигрируется на PostgreSQL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Категория туров (управляется в админке)
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique // отображаемое имя; хранится в Tour.category
+  description String   @default("") // подпись для карточки на главной
+  glyph       String   @default("✦") // символ-иконка
+  badgeClass  String   @default("b-amber") // цвет бейджа: b-green/b-amber/b-blue/b-purple/b-terra
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Тур / экскурсия
+model Tour {
+  id            String   @id @default(cuid())
+  slug          String   @unique // семантический URL: /tours/sulakskiy-kanyon
+  title         String
+  category      String // одна из TourCategory (см. lib/constants)
+  shortDesc     String // краткое описание для карточки
+  fullDesc      String   @default("") // полное описание (HTML из rich-text)
+  program       String   @default("") // программа тура по дням (HTML)
+  conditions    String   @default("") // условия тура (HTML)
+  price         Int      @default(0) // цена в рублях; 0 = «по запросу»
+  priceOnReq    Boolean  @default(false) // true → показывать «по запросу» вместо цены
+  duration      String   @default("") // «5 дней / 4 ночи»
+  difficulty    String   @default("Лёгкая") // Лёгкая / Средняя / Сложная
+  ageLimit      String   @default("0+") // «3+»
+  nearestDate   String   @default("") // ближайшая дата (свободный текст для показа)
+  startDate     DateTime? // дата ближайшего выезда для сортировки/фильтра по датам
+  seats         Int      @default(0) // свободных мест (если места ограничены)
+  unlimitedSeats Boolean @default(true) // true = места не ограничены
+  scene         String   @default("s-dusk") // градиент-заглушка, если нет фото
+  images        String   @default("[]") // JSON-массив путей к фото; [0] — обложка
+  paymentMode   String   @default("request") // "online" (Купить) | "request" (Под запрос)
+  isActive      Boolean  @default(true) // активен / скрыт
+  showOnHome    Boolean  @default(false) // показывать на главной
+  sortOrder     Int      @default(0)
+
+  // SEO-переопределения на уровне тура (необязательны)
+  metaTitle       String @default("")
+  metaDescription String @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leads Lead[]
+
+  @@index([category])
+  @@index([isActive])
+}
+
+/// Заявка от клиента (покупка или запрос)
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String   @default("")
+  message   String   @default("")
+  people    Int      @default(1)
+  date      String   @default("") // желаемая дата выезда
+  type      String   @default("request") // "purchase" (покупка) | "request" (запрос) | "contact" (форма обратной связи)
+  status    String   @default("new") // "new" | "in_progress" | "closed"
+  source    String   @default("") // страница/контекст, откуда пришла заявка
+
+  tour   Tour?   @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  tourId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([type])
+}
+
+/// Глобальные настройки сайта (одна запись, id = "main")
+model SiteSettings {
+  id String @id @default("main")
+
+  // Контакты
+  phone     String @default("+7 988 650 66 69")
+  whatsapp  String @default("79886506669")
+  telegram  String @default("krylia_kavkaza")
+  email     String @default("info@krylia-kavkaza.ru")
+  address   String @default("г. Каспийск, Республика Дагестан")
+  mapEmbed  String @default("") // HTML-код встраивания Яндекс/Google карты
+
+  // Тексты главной
+  heroTitle    String @default("Добро пожаловать на Северный Кавказ")
+  heroSubtitle String @default("Авторские туры по Дагестану и Северной Осетии. 17 лет открываем гостям подлинные горы, аулы и каньоны — официально, по договору.")
+  aboutText    String @default("")
+
+  // SEO по разделам
+  seoHomeTitle       String @default("Крылья Кавказа — авторские туры по Северному Кавказу")
+  seoHomeDesc        String @default("Туроператор по Дагестану и Северному Кавказу. 17 лет опыта, более 60 авторских программ.")
+  seoHomeKeywords    String @default("туры Дагестан, туры Северный Кавказ, экскурсии Дагестан")
+  seoCatalogTitle    String @default("Каталог туров — Крылья Кавказа")
+  seoCatalogDesc     String @default("Авторские туры и экскурсии по Дагестану и Северной Осетии. Фильтр по категории, длительности и бюджету.")
+  seoCatalogKeywords String @default("каталог туров, туры по Кавказу, экскурсии")
+  seoTourTitle       String @default("") // шаблон; {title} подставляется
+  seoTourDesc        String @default("")
+
+  // Аналитика
+  yandexMetrika String @default("") // номер счётчика Яндекс.Метрики
+
+  updatedAt DateTime @updatedAt
+}
+
+/// Конфигурация AI-консультанта
+model AiConfig {
+  id            String   @id @default("main")
+  systemPrompt  String   @default("Ты — дружелюбный консультант турагентства «Крылья Кавказа». Помогаешь подобрать тур по Дагестану и Северному Кавказу. Отвечай на «вы», кратко и по делу, предлагай конкретные туры с ценой и длительностью.")
+  toursContext  String   @default("") // дополнительный контекст о турах
+  enabled       Boolean  @default(true)
+  apiKey        String   @default("") // ключ DeepSeek API (приоритетнее .env)
+  model         String   @default("") // модель DeepSeek (пусто = значение из .env / по умолчанию)
+  updatedAt     DateTime @updatedAt
+}
+
+/// Администратор (логин + bcrypt-хэш пароля)
+model AdminUser {
+  id          String   @id @default(cuid())
+  login       String   @unique
+  password    String // bcrypt-хэш
+  name        String   @default("Менеджер")
+  role        String   @default("manager") // "owner" (полный доступ + управление командой) | "manager"
+  permissions String   @default("[]") // JSON-массив разрешённых разделов для менеджера
+  createdAt   DateTime @default(now())
+}
