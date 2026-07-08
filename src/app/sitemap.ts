@@ -11,6 +11,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: siteUrl("/"), changeFrequency: "weekly", priority: 1 },
     { url: siteUrl("/tours"), changeFrequency: "daily", priority: 0.9 },
     { url: siteUrl("/about"), changeFrequency: "monthly", priority: 0.6 },
+    { url: siteUrl("/privacy"), changeFrequency: "yearly", priority: 0.3 },
+    { url: siteUrl("/consent"), changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const tourPages: MetadataRoute.Sitemap = slugs.map((t) => ({

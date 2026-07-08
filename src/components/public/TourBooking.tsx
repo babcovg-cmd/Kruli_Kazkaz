@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadSchema, type LeadInput } from "@/lib/validation";
 import { formatPrice } from "@/lib/utils";
+import ConsentCheckbox from "@/components/public/ConsentCheckbox";
 
 type TourBookingProps = {
   tourId: string;
@@ -199,6 +200,7 @@ function BookingModal({
       people: defaultPeople,
       date: defaultDate,
       source: `Страница тура: ${title}`,
+      consent: false,
     },
   });
 
@@ -317,6 +319,8 @@ function BookingModal({
             >
               ℹ После отправки заявки менеджер свяжется с вами, уточнит детали тура и предложит удобный способ оплаты. Оплата онлайн на сайте не требуется.
             </div>
+
+            <ConsentCheckbox registration={register("consent")} error={errors.consent?.message} />
 
             {status === "error" && (
               <span className="form-note form-fail">Не удалось отправить. Попробуйте ещё раз.</span>

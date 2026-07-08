@@ -29,6 +29,10 @@ export const leadSchema = z.object({
   type: z.enum(["purchase", "request", "contact"]).default("contact"),
   tourId: z.string().optional().or(z.literal("")),
   source: z.string().max(200).optional().or(z.literal("")),
+  // Согласие на обработку ПДн (152-ФЗ, ст. 9): без отметки заявка не принимается.
+  consent: z
+    .boolean()
+    .refine((v) => v === true, "Подтвердите согласие на обработку персональных данных"),
 });
 
 export type LeadInput = z.infer<typeof leadSchema>;

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { leadSchema, type LeadInput } from "@/lib/validation";
+import ConsentCheckbox from "@/components/public/ConsentCheckbox";
 
 type LeadFormProps = {
   /** Тип заявки. */
@@ -36,7 +37,7 @@ export default function LeadForm({
     formState: { errors },
   } = useForm<LeadInput>({
     resolver: zodResolver(leadSchema),
-    defaultValues: { type, tourId: tourId ?? "", source: source ?? "" },
+    defaultValues: { type, tourId: tourId ?? "", source: source ?? "", consent: false },
   });
 
   const onSubmit = async (data: LeadInput) => {
@@ -49,7 +50,7 @@ export default function LeadForm({
       });
       if (!res.ok) throw new Error("fail");
       setStatus("ok");
-      reset({ type, tourId: tourId ?? "", source: source ?? "" });
+      reset({ type, tourId: tourId ?? "", source: source ?? "", consent: false });
     } catch {
       setStatus("error");
     }
@@ -115,6 +116,8 @@ export default function LeadForm({
         </div>
       )}
 
+      <ConsentCheckbox registration={register("consent")} error={errors.consent?.message} />
+
       <div
         style={{
           gridColumn: "1 / -1",
@@ -132,9 +135,6 @@ export default function LeadForm({
             Не удалось отправить. Попробуйте ещё раз или позвоните нам.
           </span>
         )}
-        <span className="muted" style={{ fontSize: 12 }}>
-          Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
-        </span>
       </div>
     </form>
   );

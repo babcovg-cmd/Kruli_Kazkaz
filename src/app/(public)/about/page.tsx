@@ -9,6 +9,7 @@ import CountUp from "@/components/public/CountUp";
 import LeadForm from "@/components/public/LeadForm";
 import { getSettings } from "@/lib/settings";
 import { digitsOnly } from "@/lib/utils";
+import { OPERATOR } from "@/lib/legal";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,10 @@ const STATS = [
 ];
 
 const REQUISITES: [string, string][] = [
-  ["Реестровый номер РТО", "№ В031-00161-77/01570006"],
+  ["Наименование", OPERATOR.name],
+  ["ИНН", OPERATOR.inn],
+  ["ОГРН/ОГРНИП", OPERATOR.ogrn],
+  ["Реестровый номер РТО", OPERATOR.rto],
   ["Офис", "г. Каспийск, Республика Дагестан"],
   ["Телефон", "+7 988 650 66 69"],
 ];

@@ -65,6 +65,8 @@ export default async function Footer() {
           items={[
             ["О нас", "/about"],
             ["Все туры", "/tours"],
+            ["Политика конфиденциальности", "/privacy"],
+            ["Согласие на обработку ПДн", "/consent"],
           ]}
         />
         <div>
@@ -113,6 +115,9 @@ export default async function Footer() {
         <span className="mono muted" style={{ fontSize: 12 }}>
           РТО № В031-00161-77/01570006
         </span>
+        <Link href="/privacy" className="muted" style={{ fontSize: 12 }}>
+          Политика обработки персональных данных
+        </Link>
         <span className="muted" style={{ fontSize: 12 }}>
           © 2008–2026 Крылья Кавказа. Все права защищены.
         </span>

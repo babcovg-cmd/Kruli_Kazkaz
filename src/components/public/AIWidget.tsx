@@ -134,6 +134,9 @@ export default function AIWidget({ phone }: { phone: string }) {
             →
           </button>
         </div>
+        <p className="muted" style={{ fontSize: 10, textAlign: "center", margin: "0 12px 8px", lineHeight: 1.4 }}>
+          Не указывайте в чате персональные данные — для заявки используйте формы сайта.
+        </p>
       </div>
 
       {/* Круглая кнопка-переключатель */}
