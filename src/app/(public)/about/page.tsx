@@ -53,9 +53,14 @@ export default async function AboutPage() {
 
   return (
     <>
-      {/* Hero */}
-      <Scene scene="s-peak" style={{ height: 340, display: "flex", alignItems: "flex-end" }}>
-        <div className="wrap" style={{ position: "relative", zIndex: 3, paddingBottom: 36 }}>
+      {/* Hero с фоновым видео */}
+      <Scene
+        scene="s-peak"
+        video="/assets/hero.mp4"
+        className="hero-scene"
+        style={{ height: 440, display: "flex", alignItems: "flex-end" }}
+      >
+        <div className="wrap" style={{ position: "relative", zIndex: 3, paddingBottom: 40 }}>
           <span className="eyebrow">О компании</span>
           <h1 style={{ fontSize: "clamp(34px,5vw,52px)", color: "#F4F1E7", margin: "12px 0 0" }}>
             Крылья Кавказа
