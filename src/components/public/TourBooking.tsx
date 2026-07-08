@@ -22,6 +22,7 @@ type TourBookingProps = {
   seats: number;
   hasSeats: boolean;
   seatsLabel: string | null;
+  brochure?: string;
 };
 
 export default function TourBooking({
@@ -34,6 +35,7 @@ export default function TourBooking({
   seats,
   hasSeats,
   seatsLabel,
+  brochure,
 }: TourBookingProps) {
   // Максимум человек ограничен числом свободных мест (если места ограничены).
   const maxPeople = unlimitedSeats ? Infinity : seats;
@@ -139,6 +141,17 @@ export default function TourBooking({
               Записаться в лист ожидания
             </button>
           </>
+        )}
+
+        {brochure && (
+          <a
+            href={brochure}
+            download={`Буклет — ${title}.pdf`}
+            className="btn btn-ghost"
+            style={{ width: "100%", marginTop: 10, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+          >
+            📄 Скачать буклет (PDF)
+          </a>
         )}
 
         <p className="muted" style={{ fontSize: 11, textAlign: "center", margin: "14px 0 0", lineHeight: 1.4 }}>

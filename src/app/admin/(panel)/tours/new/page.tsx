@@ -26,6 +26,7 @@ const EMPTY: TourInput = {
   seats: 0,
   scene: "s-dusk",
   images: [],
+  brochure: "",
   paymentMode: "request",
   isActive: true,
   showOnHome: false,

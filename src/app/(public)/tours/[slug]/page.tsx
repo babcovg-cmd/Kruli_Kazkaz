@@ -117,6 +117,7 @@ export default async function TourPage({
           seats={tour.seats}
           hasSeats={tour.hasSeats}
           seatsLabel={tour.seatsLabel}
+          brochure={tour.brochure || undefined}
         />
       </div>
     </>

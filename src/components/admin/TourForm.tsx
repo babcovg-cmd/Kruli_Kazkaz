@@ -11,6 +11,7 @@ import { slugify } from "@/lib/utils";
 import { DIFFICULTIES, SCENES } from "@/lib/constants";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ImageUploader from "@/components/admin/ImageUploader";
+import BrochureUploader from "@/components/admin/BrochureUploader";
 
 type Props = {
   mode: "create" | "edit";
@@ -248,6 +249,21 @@ export default function TourForm({ mode, tourId, initial, categories }: Props) {
             ))}
           </select>
         </div>
+      </div>
+
+      {/* Буклет */}
+      <div className="acard" style={{ marginBottom: 22 }}>
+        <h3 style={{ fontSize: 17, marginBottom: 6 }}>Буклет тура (PDF)</h3>
+        <p className="ahint" style={{ marginBottom: 12 }}>
+          PDF с программой тура. Появится кнопкой «Скачать буклет» в карточке и на странице тура.
+        </p>
+        <Controller
+          control={control}
+          name="brochure"
+          render={({ field }) => (
+            <BrochureUploader value={field.value || ""} onChange={field.onChange} />
+          )}
+        />
       </div>
 
       {/* SEO + публикация */}

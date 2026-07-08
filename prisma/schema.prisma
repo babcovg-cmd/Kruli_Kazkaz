@@ -43,6 +43,7 @@ model Tour {
   unlimitedSeats Boolean @default(true) // true = места не ограничены
   scene         String   @default("s-dusk") // градиент-заглушка, если нет фото
   images        String   @default("[]") // JSON-массив путей к фото; [0] — обложка
+  brochure      String   @default("") // путь к PDF-буклету с программой тура (пусто = нет)
   paymentMode   String   @default("request") // "online" (Купить) | "request" (Под запрос)
   isActive      Boolean  @default(true) // активен / скрыт
   showOnHome    Boolean  @default(false) // показывать на главной

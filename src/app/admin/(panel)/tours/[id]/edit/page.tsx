@@ -41,6 +41,7 @@ export default async function EditTourPage({ params }: { params: Promise<{ id: s
     seats: tour.seats,
     scene: tour.scene,
     images: parseImages(tour.images),
+    brochure: tour.brochure,
     paymentMode: tour.paymentMode as "online" | "request",
     isActive: tour.isActive,
     showOnHome: tour.showOnHome,

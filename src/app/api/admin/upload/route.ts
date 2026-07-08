@@ -1,4 +1,4 @@
-// Загрузка фотографий туров. Сохраняет файлы в public/uploads
+// Загрузка файлов туров (фото и PDF-буклеты). Сохраняет в public/uploads
 // и возвращает их публичные пути. Только для авторизованных.
 
 import { NextResponse } from "next/server";
@@ -9,16 +9,22 @@ import { requirePermission } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
-const MAX_SIZE = 8 * 1024 * 1024; // 8 МБ
+const MAX_IMAGE = 8 * 1024 * 1024; // 8 МБ — фото
+const MAX_PDF = 25 * 1024 * 1024; // 25 МБ — PDF-буклет
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
+// Тип файла → расширение и лимит размера.
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
   "image/gif": "gif",
   "image/avif": "avif",
+  "application/pdf": "pdf",
+};
+
+const MAX_SIZE: Record<string, number> = {
+  "application/pdf": MAX_PDF,
 };
 
 export async function POST(req: Request) {
@@ -40,14 +46,19 @@ export async function POST(req: Request) {
 
   const urls: string[] = [];
   for (const file of files) {
-    if (!ALLOWED.has(file.type)) {
+    const ext = EXT[file.type];
+    if (!ext) {
       return NextResponse.json({ error: `Недопустимый тип файла: ${file.type}` }, { status: 415 });
     }
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: "Файл больше 8 МБ" }, { status: 413 });
+    const limit = MAX_SIZE[file.type] ?? MAX_IMAGE;
+    if (file.size > limit) {
+      return NextResponse.json(
+        { error: `Файл больше ${Math.round(limit / 1024 / 1024)} МБ` },
+        { status: 413 }
+      );
     }
     const buffer = Buffer.from(await file.arrayBuffer());
-    const name = `${Date.now()}-${randomBytes(6).toString("hex")}.${EXT[file.type]}`;
+    const name = `${Date.now()}-${randomBytes(6).toString("hex")}.${ext}`;
     await writeFile(path.join(UPLOAD_DIR, name), buffer);
     urls.push(`/uploads/${name}`);
   }

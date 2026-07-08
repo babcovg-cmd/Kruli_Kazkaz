@@ -90,6 +90,8 @@ export const tourSchema = z.object({
   seats: z.coerce.number().int().min(0).max(100000).default(0),
   scene: z.string().trim().max(40).default("s-dusk"),
   images: z.array(z.string()).max(30).default([]),
+  // Путь к PDF-буклету тура (пусто = нет буклета).
+  brochure: z.string().trim().max(500).optional().default(""),
   paymentMode: z.enum(["online", "request"]).default("request"),
   isActive: z.boolean().default(true),
   showOnHome: z.boolean().default(false),
