@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { leadSchema } from "@/lib/validation";
 import { OPERATOR } from "@/lib/legal";
+import { logConsent } from "@/lib/consent-log";
 
 /** IP клиента из заголовков прокси (первый в x-forwarded-for) или x-real-ip. */
 function clientIp(req: Request): string {
@@ -54,6 +55,19 @@ export async function POST(req: Request) {
       consentVersion: OPERATOR.policyDate,
       consentIp: clientIp(req),
     },
+  });
+
+  // Дублируем согласие в append-only журнал: он переживёт удаление заявки.
+  await logConsent({
+    ts: (lead.consentAt ?? lead.createdAt).toISOString(),
+    version: lead.consentVersion,
+    ip: lead.consentIp,
+    name: lead.name,
+    phone: lead.phone,
+    email: lead.email,
+    type: lead.type,
+    source: lead.source,
+    leadId: lead.id,
   });
 
   return NextResponse.json({ ok: true, id: lead.id }, { status: 201 });

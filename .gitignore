@@ -20,6 +20,9 @@ next-env.d.ts
 /public/uploads/*
 !/public/uploads/.gitkeep
 
+# журнал согласий на обработку ПДн — содержит персональные данные, не коммитим
+/data/
+
 # env
 .env
 .env*.local
