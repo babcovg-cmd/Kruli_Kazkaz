@@ -18,6 +18,9 @@ type Row = {
   status: string;
   source: string;
   tourTitle: string;
+  consentAt: string;
+  consentVersion: string;
+  consentIp: string;
 };
 
 const STATUS_BADGE: Record<string, string> = {
@@ -171,6 +174,34 @@ export default function LeadsTable({ initial }: { initial: Row[] }) {
               {open.source && (<><Dt>Источник</Dt><Dd>{open.source}</Dd></>)}
               {open.message && (<><Dt>Сообщение</Dt><Dd>{open.message}</Dd></>)}
             </dl>
+
+            {/* Согласие на обработку ПДн (152-ФЗ): подтверждение для оператора. */}
+            <div
+              style={{
+                marginTop: 18,
+                padding: "12px 14px",
+                background: "#f3f6f4",
+                border: "1px solid #e3e8e4",
+                borderRadius: 8,
+                fontSize: 13,
+                lineHeight: 1.6,
+                color: "#3a4149",
+              }}
+            >
+              {open.consentAt ? (
+                <>
+                  <b style={{ color: "#2f7d4f" }}>✓ Согласие на обработку ПДн получено</b>
+                  <br />
+                  {fmtDate(open.consentAt)}
+                  {open.consentVersion && <> · редакция от {open.consentVersion}</>}
+                  {open.consentIp && <> · IP {open.consentIp}</>}
+                </>
+              ) : (
+                <span style={{ color: "#9aa0ac" }}>
+                  Согласие не зафиксировано (заявка создана до внедрения учёта согласий).
+                </span>
+              )}
+            </div>
 
             <div style={{ marginTop: 22 }}>
               <label className="alabel">Статус</label>

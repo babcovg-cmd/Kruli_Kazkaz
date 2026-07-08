@@ -3,6 +3,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { leadSchema } from "@/lib/validation";
+import { OPERATOR } from "@/lib/legal";
+
+/** IP клиента из заголовков прокси (первый в x-forwarded-for) или x-real-ip. */
+function clientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return req.headers.get("x-real-ip") ?? "";
+}
 
 export async function POST(req: Request) {
   let body: unknown;
@@ -41,6 +49,10 @@ export async function POST(req: Request) {
       source: data.source || "",
       status: "new",
       tourId,
+      // Фиксируем согласие на обработку ПДн: заявка не проходит валидацию без него.
+      consentAt: new Date(),
+      consentVersion: OPERATOR.policyDate,
+      consentIp: clientIp(req),
     },
   });
 

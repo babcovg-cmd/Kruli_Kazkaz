@@ -74,6 +74,11 @@ model Lead {
   status    String   @default("new") // "new" | "in_progress" | "closed"
   source    String   @default("") // страница/контекст, откуда пришла заявка
 
+  // Согласие на обработку ПДн (152-ФЗ): доказательство, что клиент его дал.
+  consentAt      DateTime? // когда получено согласие (null у старых заявок до внедрения)
+  consentVersion String    @default("") // редакция текста согласия (см. lib/legal.ts policyDate)
+  consentIp      String    @default("") // IP-адрес отправителя как техническое подтверждение
+
   tour   Tour?   @relation(fields: [tourId], references: [id], onDelete: SetNull)
   tourId String?
 

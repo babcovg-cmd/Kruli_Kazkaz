@@ -25,6 +25,9 @@ export default async function AdminLeadsPage() {
     status: l.status,
     source: l.source,
     tourTitle: l.tour?.title ?? "",
+    consentAt: l.consentAt?.toISOString() ?? "",
+    consentVersion: l.consentVersion,
+    consentIp: l.consentIp,
   }));
 
   return (
