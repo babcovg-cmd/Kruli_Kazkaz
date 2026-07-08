@@ -53,13 +53,24 @@ export default async function AboutPage() {
 
   return (
     <>
-      {/* Hero с фоновым видео */}
+      {/* Hero со стоп-кадром (баннер) */}
       <Scene
         scene="s-peak"
-        video="/assets/hero.mp4"
-        className="hero-scene"
+        image="/assets/about-hero.jpg"
+        alt="Горный хребет Кавказа"
         style={{ height: 440, display: "flex", alignItems: "flex-end" }}
       >
+        {/* Затемнение для читаемости заголовка: image идёт на z-index 1, поверх него */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 2,
+            background:
+              "linear-gradient(to top, rgba(8,10,14,0.85) 0%, rgba(8,10,14,0.3) 45%, rgba(8,10,14,0.05) 100%)",
+          }}
+        />
         <div className="wrap" style={{ position: "relative", zIndex: 3, paddingBottom: 40 }}>
           <span className="eyebrow">О компании</span>
           <h1 style={{ fontSize: "clamp(34px,5vw,52px)", color: "#F4F1E7", margin: "12px 0 0" }}>
