@@ -125,6 +125,11 @@ model SiteSettings {
   // Аналитика
   yandexMetrika String @default("") // номер счётчика Яндекс.Метрики
 
+  // Уведомления о заявках в Telegram (токен бота из @BotFather;
+  // chatId — один или несколько через запятую)
+  tgBotToken String @default("")
+  tgChatId   String @default("")
+
   updatedAt DateTime @updatedAt
 }
 

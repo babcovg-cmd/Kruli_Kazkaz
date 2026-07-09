@@ -138,6 +138,9 @@ export const settingsSchema = z.object({
   seoTourTitle: z.string().max(200).optional().default(""),
   seoTourDesc: z.string().max(400).optional().default(""),
   yandexMetrika: z.string().trim().max(40).optional().default(""),
+  // Уведомления о заявках в Telegram.
+  tgBotToken: z.string().trim().max(100).optional().default(""),
+  tgChatId: z.string().trim().max(200).optional().default(""),
 });
 
 export type SettingsInput = z.infer<typeof settingsSchema>;

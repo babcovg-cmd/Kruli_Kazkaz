@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { leadSchema } from "@/lib/validation";
 import { OPERATOR } from "@/lib/legal";
 import { logConsent } from "@/lib/consent-log";
+import { notifyNewLead } from "@/lib/telegram";
 
 /** IP клиента из заголовков прокси (первый в x-forwarded-for) или x-real-ip. */
 function clientIp(req: Request): string {
@@ -33,9 +34,14 @@ export async function POST(req: Request) {
 
   // Привязываем к туру, только если такой существует.
   let tourId: string | null = null;
+  let tourTitle: string | null = null;
   if (data.tourId) {
-    const tour = await prisma.tour.findUnique({ where: { id: data.tourId }, select: { id: true } });
+    const tour = await prisma.tour.findUnique({
+      where: { id: data.tourId },
+      select: { id: true, title: true },
+    });
     tourId = tour?.id ?? null;
+    tourTitle = tour?.title ?? null;
   }
 
   const lead = await prisma.lead.create({
@@ -56,6 +62,9 @@ export async function POST(req: Request) {
       consentIp: clientIp(req),
     },
   });
+
+  // Уведомляем менеджеров в Telegram (сбой не ломает приём заявки).
+  await notifyNewLead(lead, tourTitle);
 
   // Дублируем согласие в append-only журнал: он переживёт удаление заявки.
   await logConsent({
