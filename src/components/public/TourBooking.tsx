@@ -196,13 +196,12 @@ export default function TourBooking({
 const MESSENGERS: {
   key: keyof SocialLinks;
   label: string;
-  icon: string;
+  icon: string; // путь к иконке приложения в /assets/icons
   bg: string;
-  color: string;
 }[] = [
-  { key: "whatsapp", label: "WhatsApp", icon: "✆", bg: "rgba(79,164,107,0.16)", color: "#4FA46B" },
-  { key: "max", label: "MAX", icon: "✦", bg: "rgba(146,119,184,0.18)", color: "#9277B8" },
-  { key: "telegram", label: "Telegram", icon: "➤", bg: "rgba(90,143,192,0.16)", color: "#5A8FC0" },
+  { key: "whatsapp", label: "WhatsApp", icon: "/assets/icons/whatsapp.png", bg: "rgba(79,164,107,0.16)" },
+  { key: "max", label: "MAX", icon: "/assets/icons/max.png", bg: "rgba(146,119,184,0.18)" },
+  { key: "telegram", label: "Telegram", icon: "/assets/icons/telegram.png", bg: "rgba(90,143,192,0.16)" },
 ];
 
 function ContactModal({ socials, onClose }: { socials: SocialLinks; onClose: () => void }) {
@@ -268,22 +267,14 @@ function ContactModal({ socials, onClose }: { socials: SocialLinks; onClose: () 
                 transition: "border-color .15s var(--ease)",
               }}
             >
-              <span
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 19,
-                  background: "var(--surface)",
-                  color: m.color,
-                  flexShrink: 0,
-                }}
-              >
-                {m.icon}
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={m.icon}
+                alt=""
+                width={38}
+                height={38}
+                style={{ borderRadius: "50%", flexShrink: 0 }}
+              />
               {m.label}
             </a>
           ))}
