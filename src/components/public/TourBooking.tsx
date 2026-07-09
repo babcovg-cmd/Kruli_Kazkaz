@@ -290,7 +290,7 @@ function BookingModal({
               {errors.name && <span className="field-error">{errors.name.message}</span>}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div className="form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               <div className="field">
                 <label>Телефон</label>
                 <input className={`input ${errors.phone ? "has-error" : ""}`} placeholder="+7 ___ ___ __ __" {...register("phone")} />

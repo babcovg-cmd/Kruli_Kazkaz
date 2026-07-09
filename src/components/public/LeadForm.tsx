@@ -81,6 +81,7 @@ export default function LeadForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      className={compact ? "" : "form-grid"}
       style={{ display: "grid", gap: 14, gridTemplateColumns: compact ? "1fr" : "1fr 1fr" }}
       noValidate
     >

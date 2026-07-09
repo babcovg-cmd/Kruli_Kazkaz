@@ -66,9 +66,9 @@ export default async function TourPage({
         scene={tour.scene}
         image={tour.cover}
         alt={tour.title}
-        style={{ height: 420, display: "flex", alignItems: "flex-end" }}
+        style={{ minHeight: 420, display: "flex", alignItems: "flex-end" }}
       >
-        <div className="wrap" style={{ position: "relative", zIndex: 3, paddingBottom: 36, width: "100%" }}>
+        <div className="wrap" style={{ position: "relative", zIndex: 3, paddingTop: 120, paddingBottom: 36, width: "100%" }}>
           <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
             <span className={`badge ${tour.badgeClass}`}>{tour.category}</span>
             <span className="badge b-terra">{tour.duration}</span>
@@ -96,7 +96,7 @@ export default async function TourPage({
           />
 
           <h3 style={{ fontSize: 24, color: "var(--txt)", margin: "48px 0 18px" }}>Галерея</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+          <div className="tour-gallery" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
             {gallery
               ? gallery.map((src, i) => (
                   <Scene key={i} image={src} alt={`${tour.title} — фото ${i + 1}`} style={{ height: 130, borderRadius: "var(--r-md)" }} />

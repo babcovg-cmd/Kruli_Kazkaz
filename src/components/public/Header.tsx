@@ -21,6 +21,7 @@ export default function Header() {
     href === "/tours" ? pathname.startsWith("/tours") : pathname === href;
 
   return (
+    <>
     <header
       style={{
         position: "sticky",
@@ -55,36 +56,43 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <ThemeToggle />
-        <Link href="/tours" className="btn btn-gold btn-sm desk-cta">
-          Смотреть туры
-        </Link>
-        <button
-          className="burger"
-          onClick={() => setOpen(true)}
-          aria-label="Открыть меню"
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            flexDirection: "column",
-            gap: 5,
-            padding: 6,
-          }}
-        >
-          <span style={{ width: 24, height: 2, background: "var(--txt)" }} />
-          <span style={{ width: 24, height: 2, background: "var(--txt)" }} />
-          <span style={{ width: 24, height: 2, background: "var(--txt)" }} />
-        </button>
+        {/* Правая группа: на мобильных (когда nav скрыт) прижимается вправо через CSS */}
+        <div className="hdr-actions" style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <ThemeToggle />
+          <Link href="/tours" className="btn btn-gold btn-sm desk-cta">
+            Смотреть туры
+          </Link>
+          <button
+            className="burger"
+            onClick={() => setOpen(true)}
+            aria-label="Открыть меню"
+            style={{
+              display: "none",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              flexDirection: "column",
+              gap: 5,
+              padding: 8,
+            }}
+          >
+            <span style={{ width: 24, height: 2, background: "var(--txt)" }} />
+            <span style={{ width: 24, height: 2, background: "var(--txt)" }} />
+            <span style={{ width: 24, height: 2, background: "var(--txt)" }} />
+          </button>
+        </div>
       </div>
 
+    </header>
+
+      {/* Мобильное меню — вне <header>: его backdrop-filter делает header
+          containing block для position:fixed, и оверлей прибивался к шапке. */}
       {open && (
         <div
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 60,
+            zIndex: 240, // выше AI-кнопки (70) и cookie-баннера (200)
             background: "var(--overlay-bg)",
             display: "flex",
             flexDirection: "column",
@@ -146,6 +154,6 @@ export default function Header() {
           </Link>
         </div>
       )}
-    </header>
+    </>
   );
 }

@@ -118,21 +118,46 @@ h1,h2,h3,h4{font-family:var(--d-font);text-transform:uppercase;margin:0;font-wei
 .b-purple{background:rgba(146,119,184,0.2);color:#bda7dd}
 .b-terra{background:rgba(181,87,60,0.2);color:#d98a6e}
 
+/* ───── Фильтры каталога: мобильная кнопка-переключатель ───── */
+.filters-toggle{display:none;width:100%;align-items:center;justify-content:space-between;
+  background:none;border:none;cursor:pointer;padding:2px 0;
+  font-family:var(--d-font);text-transform:uppercase;letter-spacing:.08em;
+  font-size:15px;font-weight:600;color:var(--txt)}
+.filters-count{display:inline-flex;align-items:center;justify-content:center;
+  min-width:20px;height:20px;margin-left:8px;padding:0 6px;border-radius:var(--r-pill);
+  background:var(--gold);color:#1a1407;font:600 12px/1 var(--t-font)}
+
 /* Responsive */
 @media (max-width:860px){
   .desk-nav,.desk-cta{display:none !important}
   .burger{display:flex !important}
+  .hdr-actions{margin-left:auto} /* nav скрыт — прижимаем управление вправо */
   .grid-3{grid-template-columns:1fr 1fr !important}
   .grid-cat{grid-template-columns:1fr 1fr !important}
   footer .wrap{grid-template-columns:1fr 1fr !important}
   .hero-h1{font-size:46px !important}
   .tour-layout{grid-template-columns:1fr !important}
   .booking-sticky{position:static !important}
+  /* Фильтры каталога: сворачиваемая панель вместо простыни над турами */
+  .filters{position:static !important}
+  .filters-toggle{display:flex}
+  .filters .filters-body{display:none;margin-top:18px}
+  .filters.open .filters-body{display:block}
 }
 @media (max-width:560px){
   .grid-3,.grid-cat{grid-template-columns:1fr !important}
   footer .wrap{grid-template-columns:1fr !important}
   .hero-h1{font-size:36px !important}
+  /* Двухколоночные ряды форм — в одну колонку */
+  .form-grid{grid-template-columns:1fr !important}
+  /* Галерея тура: 3 миниатюры в ряд слишком мелко */
+  .tour-gallery{grid-template-columns:repeat(2,1fr) !important}
+  /* iOS Safari зумит страницу при фокусе на поле c font-size < 16px */
+  .input,.textarea,.select,.ai-input{font-size:16px}
+  /* Меньше «воздуха» вокруг модалки — форме брони нужна ширина */
+  .modal-backdrop{padding:12px}
+  /* Крупные кнопки на всю ширину в узких карточках/сайдбаре читаются лучше */
+  .booking-sticky .btn{width:100%}
 }
 
 /* ═══════════ Дополнения для рабочего сайта ═══════════ */
@@ -277,6 +302,9 @@ h1,h2,h3,h4{font-family:var(--d-font);text-transform:uppercase;margin:0;font-wei
 @keyframes fadeUp{from{opacity:0;transform:translatey(16px)}to{opacity:1;transform:none}}
 
 /* ═══════════ Расширенные анимации ═══════════ */
+
+/* Ссылка «Скачать буклет» в карточке: увеличенная зона нажатия для тач-экранов */
+.tc-brochure{padding:8px 0;margin:-6px 0}
 
 /* Плавный лифт карточки тура + зум фото/сцены */
 .tour-card{transition:transform .35s var(--ease)}

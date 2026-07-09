@@ -58,7 +58,7 @@ export default async function AboutPage() {
         scene="s-peak"
         image="/assets/about-hero.jpg"
         alt="Горный хребет Кавказа"
-        style={{ height: 440, display: "flex", alignItems: "flex-end" }}
+        style={{ minHeight: 440, display: "flex", alignItems: "flex-end" }}
       >
         {/* Затемнение для читаемости заголовка: image идёт на z-index 1, поверх него */}
         <div

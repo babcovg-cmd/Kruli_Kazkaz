@@ -38,6 +38,8 @@ export default function CatalogClient({
   const [maxPrice, setMaxPrice] = useState<number>(50000);
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
+  // Мобильные: панель фильтров свёрнута по умолчанию (на десктопе всегда видна).
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Верхняя граница слайдера = максимальная цена среди туров (округлённая).
   const priceCap = useMemo(() => {
@@ -72,6 +74,14 @@ export default function CatalogClient({
     setDateTo("");
   };
 
+  // Сколько фильтров активно — для подписи мобильной кнопки «Фильтры».
+  const activeCount =
+    (cat !== "Все" ? 1 : 0) +
+    (diff !== "Любая" ? 1 : 0) +
+    (maxPrice < priceCap ? 1 : 0) +
+    (dateFrom ? 1 : 0) +
+    (dateTo ? 1 : 0);
+
   return (
     <div
       className="wrap tour-layout"
@@ -83,9 +93,28 @@ export default function CatalogClient({
       }}
     >
       <aside
-        className="card"
+        className={`card filters ${filtersOpen ? "open" : ""}`}
         style={{ position: "sticky", top: 90, alignSelf: "start", padding: 22 }}
       >
+        {/* Кнопка видна только на мобильных: раскрывает/сворачивает фильтры */}
+        <button
+          type="button"
+          className="filters-toggle"
+          onClick={() => setFiltersOpen((o) => !o)}
+          aria-expanded={filtersOpen}
+        >
+          <span>
+            Фильтры
+            {activeCount > 0 && (
+              <span className="filters-count">{activeCount}</span>
+            )}
+          </span>
+          <span aria-hidden="true" style={{ fontSize: 12 }}>
+            {filtersOpen ? "▲" : "▼"}
+          </span>
+        </button>
+
+        <div className="filters-body">
         <FilterGroup title="Категория">
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {CATS.map((c) => (
@@ -170,6 +199,7 @@ export default function CatalogClient({
         <button onClick={reset} className="btn btn-ghost btn-sm" style={{ width: "100%", marginTop: 8 }}>
           Сбросить
         </button>
+        </div>
       </aside>
 
       <main>
