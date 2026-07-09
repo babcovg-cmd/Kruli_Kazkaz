@@ -53,13 +53,14 @@ export default async function PrivacyPage() {
         <ul>
           <li>Наименование: {OPERATOR.name}</li>
           <li>ИНН: {OPERATOR.inn}</li>
-          <li>ОГРН/ОГРНИП: {OPERATOR.ogrn}</li>
+          <li>КПП: {OPERATOR.kpp}</li>
+          <li>ОГРН: {OPERATOR.ogrn}</li>
           <li>Адрес: {OPERATOR.address}</li>
           <li>Реестровый номер туроператора: {OPERATOR.rto}</li>
           <li>
             E-mail для обращений по вопросам обработки персональных данных: {OPERATOR.email}
           </li>
-          <li>Телефон: {s.phone}</li>
+          <li>Телефоны: {OPERATOR.phones.join(", ")}</li>
         </ul>
 
         <h2>3. Персональные данные, которые обрабатывает Оператор</h2>

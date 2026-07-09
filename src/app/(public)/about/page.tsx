@@ -30,10 +30,16 @@ const STATS = [
 const REQUISITES: [string, string][] = [
   ["Наименование", OPERATOR.name],
   ["ИНН", OPERATOR.inn],
-  ["ОГРН/ОГРНИП", OPERATOR.ogrn],
+  ["КПП", OPERATOR.kpp],
+  ["ОГРН", OPERATOR.ogrn],
   ["Реестровый номер РТО", OPERATOR.rto],
-  ["Офис", "г. Каспийск, Республика Дагестан"],
-  ["Телефон", "+7 988 650 66 69"],
+  ["Юридический адрес", OPERATOR.address],
+  ["Телефоны", OPERATOR.phones.join(", ")],
+  ["E-mail", OPERATOR.email],
+  ["Банк", OPERATOR.bank.name],
+  ["Расчётный счёт", OPERATOR.bank.account],
+  ["Корр. счёт", OPERATOR.bank.corrAccount],
+  ["БИК", OPERATOR.bank.bik],
 ];
 
 export default async function AboutPage() {
