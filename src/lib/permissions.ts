@@ -3,13 +3,14 @@
 
 export type Role = "owner" | "manager";
 
-export type SectionKey = "tours" | "ai" | "leads" | "settings";
+export type SectionKey = "tours" | "ai" | "leads" | "notifications" | "settings";
 
 /** Разделы панели с правами доступа (порядок = порядок в меню). */
 export const ADMIN_SECTIONS: { key: SectionKey; label: string; href: string; ico: string }[] = [
   { key: "tours", label: "Туры", href: "/admin/tours", ico: "◧" },
   { key: "ai", label: "ИИ-консультант", href: "/admin/ai", ico: "✦" },
   { key: "leads", label: "Заявки", href: "/admin/leads", ico: "✉" },
+  { key: "notifications", label: "Уведомления в ТГ", href: "/admin/notifications", ico: "🔔" },
   { key: "settings", label: "Настройки сайта", href: "/admin/settings", ico: "⚙" },
 ];
 

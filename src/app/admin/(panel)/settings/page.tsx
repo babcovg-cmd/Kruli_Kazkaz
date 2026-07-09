@@ -32,8 +32,6 @@ export default async function AdminSettingsPage() {
     seoTourTitle: s.seoTourTitle,
     seoTourDesc: s.seoTourDesc,
     yandexMetrika: s.yandexMetrika,
-    tgBotToken: s.tgBotToken,
-    tgChatId: s.tgChatId,
   };
 
   return (

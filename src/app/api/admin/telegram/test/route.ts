@@ -14,7 +14,7 @@ const testSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    await requirePermission("settings");
+    await requirePermission("notifications");
   } catch (res) {
     return res as Response;
   }

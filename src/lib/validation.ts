@@ -138,16 +138,21 @@ export const settingsSchema = z.object({
   seoTourTitle: z.string().max(200).optional().default(""),
   seoTourDesc: z.string().max(400).optional().default(""),
   yandexMetrika: z.string().trim().max(40).optional().default(""),
-  // Уведомления о заявках в Telegram.
-  tgBotToken: z.string().trim().max(100).optional().default(""),
-  tgChatId: z.string().trim().max(200).optional().default(""),
 });
+
+/** Уведомления о заявках в Telegram (отдельный раздел админки). */
+export const notificationsSchema = z.object({
+  tgBotToken: z.string().trim().max(100).default(""),
+  tgChatId: z.string().trim().max(200).default(""),
+});
+
+export type NotificationsInput = z.infer<typeof notificationsSchema>;
 
 export type SettingsInput = z.infer<typeof settingsSchema>;
 
 /* ─────────── Управление командой (админ-аккаунты) ─────────── */
 
-const sectionKey = z.enum(["tours", "ai", "leads", "settings"]);
+const sectionKey = z.enum(["tours", "ai", "leads", "notifications", "settings"]);
 const roleEnum = z.enum(["owner", "manager"]);
 
 /** Создание нового сотрудника (владельцем). */
