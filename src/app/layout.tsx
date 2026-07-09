@@ -14,7 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(siteUrl()),
     title: {
       default: s.seoHomeTitle,
-      template: "%s — Крылья Кавказа",
+      // Заголовок вкладки — только название страницы, без суффикса бренда.
+      template: "%s",
     },
     description: s.seoHomeDesc,
     keywords: s.seoHomeKeywords,

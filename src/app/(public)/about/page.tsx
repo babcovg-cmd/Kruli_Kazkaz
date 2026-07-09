@@ -14,7 +14,7 @@ import { OPERATOR } from "@/lib/legal";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "О компании и контакты",
+  title: "О компании",
   description:
     "Туроператор «Крылья Кавказа»: 17 лет опыта, более 60 авторских программ по Дагестану и Северному Кавказу. Реквизиты, лицензия и контакты — телефон, WhatsApp, Telegram.",
   alternates: { canonical: "/about" },
