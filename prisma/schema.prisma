@@ -101,6 +101,12 @@ model SiteSettings {
   address   String @default("г. Каспийск, Республика Дагестан")
   mapEmbed  String @default("") // HTML-код встраивания Яндекс/Google карты
 
+  // Прямые ссылки на мессенджеры (кнопки «Написать напрямую» и соцкнопки по сайту).
+  // Пусто = ссылка строится из полей whatsapp/telegram выше; MAX без ссылки скрыт.
+  whatsappUrl String @default("")
+  telegramUrl String @default("")
+  maxUrl      String @default("")
+
   // Тексты главной
   heroTitle    String @default("Добро пожаловать на Северный Кавказ")
   heroSubtitle String @default("Авторские туры по Дагестану и Северной Осетии. 17 лет открываем гостям подлинные горы, аулы и каньоны — официально, по договору.")

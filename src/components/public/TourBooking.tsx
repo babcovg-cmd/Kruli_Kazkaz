@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { leadSchema, type LeadInput } from "@/lib/validation";
 import { formatPrice } from "@/lib/utils";
 import ConsentCheckbox from "@/components/public/ConsentCheckbox";
+import type { SocialLinks } from "@/lib/social";
 
 type TourBookingProps = {
   tourId: string;
@@ -23,6 +24,7 @@ type TourBookingProps = {
   hasSeats: boolean;
   seatsLabel: string | null;
   brochure?: string;
+  socials: SocialLinks;
 };
 
 export default function TourBooking({
@@ -36,11 +38,15 @@ export default function TourBooking({
   hasSeats,
   seatsLabel,
   brochure,
+  socials,
 }: TourBookingProps) {
   // Максимум человек ограничен числом свободных мест (если места ограничены).
   const maxPeople = unlimitedSeats ? Infinity : seats;
   const [people, setPeople] = useState(() => (unlimitedSeats ? 2 : Math.min(2, Math.max(1, seats))));
   const [open, setOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+
+  const hasSocials = !!(socials.whatsapp || socials.telegram || socials.max);
 
   const hasPrice = !priceOnReq && price > 0;
   const total = hasPrice ? price * people : 0;
@@ -143,6 +149,16 @@ export default function TourBooking({
           </>
         )}
 
+        {hasSocials && (
+          <button
+            className="btn btn-ghost"
+            style={{ width: "100%", marginTop: 10 }}
+            onClick={() => setContactOpen(true)}
+          >
+            💬 Написать напрямую
+          </button>
+        )}
+
         {brochure && (
           <a
             href={brochure}
@@ -169,7 +185,112 @@ export default function TourBooking({
           onClose={() => setOpen(false)}
         />
       )}
+
+      {contactOpen && <ContactModal socials={socials} onClose={() => setContactOpen(false)} />}
     </aside>
+  );
+}
+
+/* ─────────── Окно «Написать напрямую»: WhatsApp / MAX / Telegram ─────────── */
+
+const MESSENGERS: {
+  key: keyof SocialLinks;
+  label: string;
+  icon: string;
+  bg: string;
+  color: string;
+}[] = [
+  { key: "whatsapp", label: "WhatsApp", icon: "✆", bg: "rgba(79,164,107,0.16)", color: "#4FA46B" },
+  { key: "max", label: "MAX", icon: "✦", bg: "rgba(146,119,184,0.18)", color: "#9277B8" },
+  { key: "telegram", label: "Telegram", icon: "➤", bg: "rgba(90,143,192,0.16)", color: "#5A8FC0" },
+];
+
+function ContactModal({ socials, onClose }: { socials: SocialLinks; onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  if (!mounted) return null;
+
+  const items = MESSENGERS.filter((m) => socials[m.key]);
+
+  return createPortal(
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 380 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "20px 24px",
+            borderBottom: "1px solid var(--line)",
+          }}
+        >
+          <h2 style={{ fontSize: 22, color: "var(--txt)" }}>Написать напрямую</h2>
+          <button
+            onClick={onClose}
+            aria-label="Закрыть"
+            style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "var(--txt-3)", lineHeight: 1 }}
+          >
+            ×
+          </button>
+        </div>
+
+        <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
+          <p className="muted" style={{ fontSize: 14, margin: "0 0 4px" }}>
+            Выберите удобный мессенджер — менеджер ответит в рабочее время.
+          </p>
+          {items.map((m) => (
+            <a
+              key={m.key}
+              href={socials[m.key]}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onClose}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                padding: "14px 16px",
+                borderRadius: "var(--r-md)",
+                border: "1px solid var(--line-2)",
+                background: m.bg,
+                fontWeight: 600,
+                fontSize: 16,
+                color: "var(--txt)",
+                transition: "border-color .15s var(--ease)",
+              }}
+            >
+              <span
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 19,
+                  background: "var(--surface)",
+                  color: m.color,
+                  flexShrink: 0,
+                }}
+              >
+                {m.icon}
+              </span>
+              {m.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body
   );
 }
 

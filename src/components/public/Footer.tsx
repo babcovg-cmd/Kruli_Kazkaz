@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import { getSettings } from "@/lib/settings";
+import { getSocialLinks } from "@/lib/social";
 import { digitsOnly } from "@/lib/utils";
 
 function FCol({
@@ -33,6 +34,7 @@ function FCol({
 export default async function Footer() {
   const s = await getSettings();
   const tel = digitsOnly(s.phone);
+  const socials = getSocialLinks(s);
 
   return (
     <footer style={{ background: "var(--bg-2)", borderTop: "1px solid var(--line)" }}>
@@ -80,23 +82,22 @@ export default async function Footer() {
               {s.phone}
             </a>
             <br />
-            <span style={{ display: "inline-flex", gap: 12, marginTop: 8 }}>
-              <a
-                href={`https://wa.me/${digitsOnly(s.whatsapp)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--txt-2)" }}
-              >
-                WhatsApp
-              </a>
-              <a
-                href={`https://t.me/${s.telegram.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "var(--txt-2)" }}
-              >
-                Telegram
-              </a>
+            <span style={{ display: "inline-flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+              {socials.whatsapp && (
+                <a href={socials.whatsapp} target="_blank" rel="noopener noreferrer" style={{ color: "var(--txt-2)" }}>
+                  WhatsApp
+                </a>
+              )}
+              {socials.max && (
+                <a href={socials.max} target="_blank" rel="noopener noreferrer" style={{ color: "var(--txt-2)" }}>
+                  MAX
+                </a>
+              )}
+              {socials.telegram && (
+                <a href={socials.telegram} target="_blank" rel="noopener noreferrer" style={{ color: "var(--txt-2)" }}>
+                  Telegram
+                </a>
+              )}
             </span>
           </p>
         </div>

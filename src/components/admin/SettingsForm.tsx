@@ -48,6 +48,19 @@ export default function SettingsForm({ initial }: { initial: SettingsInput }) {
         </div>
       </div>
 
+      {/* Мессенджеры: кнопки «Написать напрямую» и соцссылки по всему сайту */}
+      <div className="acard" style={{ marginBottom: 22 }}>
+        <h3 style={{ fontSize: 17, marginBottom: 6 }}>Мессенджеры</h3>
+        <p className="ahint" style={{ marginBottom: 14 }}>
+          Прямые ссылки для кнопки «Написать напрямую» на странице тура и всех кнопок
+          мессенджеров на сайте (футер, контакты). Если поле пустое, WhatsApp и Telegram
+          собираются из номера и логина выше, а кнопка MAX не показывается.
+        </p>
+        <Field label="Ссылка WhatsApp" reg={register("whatsappUrl")} hint="Например: https://wa.me/79886506669" />
+        <Field label="Ссылка MAX" reg={register("maxUrl")} hint="Например: https://max.ru/u/ваш_профиль" />
+        <Field label="Ссылка Telegram" reg={register("telegramUrl")} hint="Например: https://t.me/krylia_kavkaza" />
+      </div>
+
       {/* Тексты главной */}
       <div className="acard" style={{ marginBottom: 22 }}>
         <h3 style={{ fontSize: 17, marginBottom: 16 }}>Тексты главной страницы</h3>

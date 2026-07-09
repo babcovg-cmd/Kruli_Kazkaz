@@ -119,6 +119,10 @@ export const settingsSchema = z.object({
   phone: z.string().trim().max(50).default(""),
   whatsapp: z.string().trim().max(50).default(""),
   telegram: z.string().trim().max(80).default(""),
+  // Прямые ссылки на мессенджеры; пусто = собрать из полей выше / скрыть (MAX).
+  whatsappUrl: z.string().trim().max(300).default(""),
+  telegramUrl: z.string().trim().max(300).default(""),
+  maxUrl: z.string().trim().max(300).default(""),
   email: z.string().trim().max(150).default(""),
   address: z.string().trim().max(300).default(""),
   mapEmbed: z.string().max(4000).optional().default(""),

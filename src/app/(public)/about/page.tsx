@@ -8,6 +8,7 @@ import Reveal from "@/components/public/Reveal";
 import CountUp from "@/components/public/CountUp";
 import LeadForm from "@/components/public/LeadForm";
 import { getSettings } from "@/lib/settings";
+import { getSocialLinks } from "@/lib/social";
 import { digitsOnly } from "@/lib/utils";
 import { OPERATOR } from "@/lib/legal";
 
@@ -45,15 +46,15 @@ const REQUISITES: [string, string][] = [
 export default async function AboutPage() {
   const s = await getSettings();
   const tel = digitsOnly(s.phone);
+  const socials = getSocialLinks(s);
 
   const channels: { label: string; value: string; href: string }[] = [
     { label: "Телефон", value: s.phone, href: `tel:+${tel}` },
-    { label: "WhatsApp", value: s.phone, href: `https://wa.me/${digitsOnly(s.whatsapp)}` },
-    {
-      label: "Telegram",
-      value: `@${s.telegram.replace(/^@/, "")}`,
-      href: `https://t.me/${s.telegram.replace(/^@/, "")}`,
-    },
+    ...(socials.whatsapp ? [{ label: "WhatsApp", value: "написать в чат", href: socials.whatsapp }] : []),
+    ...(socials.max ? [{ label: "MAX", value: "написать в чат", href: socials.max }] : []),
+    ...(socials.telegram
+      ? [{ label: "Telegram", value: s.telegram ? `@${s.telegram.replace(/^@/, "")}` : "написать в чат", href: socials.telegram }]
+      : []),
     { label: "E-mail", value: s.email, href: `mailto:${s.email}` },
   ];
 

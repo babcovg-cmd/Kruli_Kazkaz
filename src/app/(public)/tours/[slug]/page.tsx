@@ -7,6 +7,8 @@ import TourTabs from "@/components/public/TourTabs";
 import TourBooking from "@/components/public/TourBooking";
 import { getTourBySlug } from "@/lib/data";
 import { SCENES } from "@/lib/constants";
+import { getSettings } from "@/lib/settings";
+import { getSocialLinks } from "@/lib/social";
 
 // Контент управляется из админки — рендерим динамически, чтобы правки
 // отображались сразу без пересборки.
@@ -44,8 +46,9 @@ export default async function TourPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const tour = await getTourBySlug(slug);
+  const [tour, settings] = await Promise.all([getTourBySlug(slug), getSettings()]);
   if (!tour) notFound();
+  const socials = getSocialLinks(settings);
 
   // Галерея: реальные фото, либо набор градиент-сцен как в макете.
   const gallery =
@@ -118,6 +121,7 @@ export default async function TourPage({
           hasSeats={tour.hasSeats}
           seatsLabel={tour.seatsLabel}
           brochure={tour.brochure || undefined}
+          socials={socials}
         />
       </div>
     </>
