@@ -39,6 +39,48 @@ export async function sendTelegram(
   }
 }
 
+/** Данные бота по токену (для deep-link привязки нужен username). */
+export async function getBotInfo(
+  token: string
+): Promise<{ ok: boolean; username?: string; error?: string }> {
+  try {
+    const res = await fetch(`${API}/bot${token}/getMe`);
+    const json = await res.json().catch(() => null);
+    if (!json?.ok) return { ok: false, error: json?.description || `HTTP ${res.status}` };
+    return { ok: true, username: json.result?.username };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "network error" };
+  }
+}
+
+/**
+ * Ищет чат, который нажал Start по deep-ссылке с одноразовым кодом
+ * (сообщение вида «/start КОД»). Так привязывается именно чат админа.
+ */
+export async function findChatByStartCode(
+  token: string,
+  code: string
+): Promise<{ ok: boolean; chat?: { id: string; name: string }; error?: string }> {
+  try {
+    const res = await fetch(`${API}/bot${token}/getUpdates`);
+    const json = await res.json().catch(() => null);
+    if (!json?.ok) return { ok: false, error: json?.description || `HTTP ${res.status}` };
+    for (const u of [...(json.result ?? [])].reverse()) {
+      const msg = u.message;
+      if (!msg?.chat || typeof msg.text !== "string") continue;
+      if (msg.text.trim() === `/start ${code}`) {
+        const chat = msg.chat;
+        const name =
+          chat.title || [chat.first_name, chat.last_name].filter(Boolean).join(" ") || chat.username || "чат";
+        return { ok: true, chat: { id: String(chat.id), name } };
+      }
+    }
+    return { ok: true }; // ещё не нажал Start
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "network error" };
+  }
+}
+
 /**
  * Список чатов, которые писали боту (для подсказки chat ID в админке).
  * Требует, чтобы пользователь сначала отправил боту любое сообщение.
