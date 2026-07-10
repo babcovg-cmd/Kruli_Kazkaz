@@ -4,7 +4,7 @@
 import { requirePermission } from "@/lib/auth";
 import { getAiConfig, getSettings } from "@/lib/settings";
 import { chatTestSchema } from "@/lib/validation";
-import { buildToursContext, buildSystemPrompt, streamDeepSeek } from "@/lib/ai";
+import { buildToursContext, buildCompanyContext, buildSystemPrompt, streamDeepSeek } from "@/lib/ai";
 
 export const runtime = "nodejs";
 
@@ -34,11 +34,13 @@ export async function POST(req: Request) {
   if (!parsed.success) return new Response("Некорректный запрос", { status: 422 });
 
   const toursContext = await buildToursContext();
+  const companyContext = buildCompanyContext(settings);
   const systemPrompt = buildSystemPrompt({
     // Если переданы значения из редактора — используем их, иначе сохранённые.
     systemPrompt: parsed.data.systemPrompt ?? ai.systemPrompt,
     extraContext: parsed.data.toursContext ?? ai.toursContext,
     toursContext,
+    companyContext,
     phone: settings.phone,
   });
 

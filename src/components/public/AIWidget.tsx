@@ -14,6 +14,8 @@ const GREETING: Msg = {
   content: "Здравствуйте! Я подберу тур по Кавказу. Куда хотите поехать и на сколько дней?",
 };
 
+const STORAGE_KEY = "kk-chat-history";
+
 export default function AIWidget({ phone }: { phone: string }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
@@ -21,6 +23,29 @@ export default function AIWidget({ phone }: { phone: string }) {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Память между перезагрузками: восстанавливаем историю из localStorage.
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Msg[];
+        if (Array.isArray(parsed) && parsed.length > 0) setMessages([GREETING, ...parsed]);
+      }
+    } catch {
+      /* хранилище недоступно — работаем без сохранения */
+    }
+  }, []);
+
+  // Сохраняем историю (без приветствия) при каждом изменении.
+  useEffect(() => {
+    try {
+      const toSave = messages.filter((m) => m !== GREETING);
+      if (toSave.length > 0) localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave.slice(-40)));
+    } catch {
+      /* игнорируем ошибки записи */
+    }
+  }, [messages]);
 
   // Автопрокрутка к последнему сообщению.
   useEffect(() => {
