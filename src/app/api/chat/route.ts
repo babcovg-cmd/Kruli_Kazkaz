@@ -4,11 +4,42 @@
 
 import { getAiConfig, getSettings } from "@/lib/settings";
 import { chatRequestSchema } from "@/lib/validation";
-import { buildToursContext, buildSystemPrompt, streamDeepSeek } from "@/lib/ai";
+import { buildToursContext, buildCompanyContext, buildSystemPrompt, streamDeepSeek } from "@/lib/ai";
 
 export const runtime = "nodejs";
 
+// Простой лимит частоты по IP: защита от спама и слива токенов DeepSeek.
+// Хранится в памяти процесса (подходит для одного Node-сервера / VPS).
+const RATE_LIMIT = 20; // сообщений
+const RATE_WINDOW_MS = 60_000; // за 1 минуту
+const hits = new Map<string, number[]>();
+
+function clientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return req.headers.get("x-real-ip") || "unknown";
+}
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const arr = (hits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS);
+  arr.push(now);
+  hits.set(ip, arr);
+  // Изредка подчищаем старые записи, чтобы Map не рос бесконечно.
+  if (hits.size > 5000) {
+    for (const [k, v] of hits) if (v.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(k);
+  }
+  return arr.length > RATE_LIMIT;
+}
+
 export async function POST(req: Request) {
+  if (rateLimited(clientIp(req))) {
+    return new Response("Слишком много сообщений подряд. Немного подождите и напишите снова 🙏", {
+      status: 429,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  }
+
   const [ai, settings] = await Promise.all([getAiConfig(), getSettings()]);
 
   // Ключ и модель: приоритет — заданным в админке, затем переменные окружения.
@@ -32,10 +63,12 @@ export async function POST(req: Request) {
   }
 
   const toursContext = await buildToursContext();
+  const companyContext = buildCompanyContext(settings);
   const systemPrompt = buildSystemPrompt({
     systemPrompt: ai.systemPrompt,
     extraContext: ai.toursContext,
     toursContext,
+    companyContext,
     phone: settings.phone,
   });
 
