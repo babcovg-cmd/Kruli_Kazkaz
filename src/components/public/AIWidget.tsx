@@ -14,7 +14,8 @@ const GREETING: Msg = {
   content: "Здравствуйте! Я подберу тур по Кавказу. Куда хотите поехать и на сколько дней?",
 };
 
-const STORAGE_KEY = "kk-chat-history";
+// Ключ старой «памяти чата» (сохранение отключено; ключ чистим у посетителей).
+const LEGACY_STORAGE_KEY = "kk-chat-history";
 
 // Модели просят отвечать без Markdown, но подстраховываемся: **текст** рисуем
 // жирным, «* » / «- » в начале строки превращаем в «• », ссылки делаем
@@ -79,28 +80,15 @@ export default function AIWidget({ phone }: { phone: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Память между перезагрузками: восстанавливаем историю из localStorage.
+  // История живёт только до перезагрузки страницы: каждый визит — новый чат.
+  // Подчищаем историю, сохранённую старой версией виджета.
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Msg[];
-        if (Array.isArray(parsed) && parsed.length > 0) setMessages([GREETING, ...parsed]);
-      }
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
     } catch {
-      /* хранилище недоступно — работаем без сохранения */
+      /* хранилище недоступно — и не нужно */
     }
   }, []);
-
-  // Сохраняем историю (без приветствия) при каждом изменении.
-  useEffect(() => {
-    try {
-      const toSave = messages.filter((m) => m !== GREETING);
-      if (toSave.length > 0) localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave.slice(-40)));
-    } catch {
-      /* игнорируем ошибки записи */
-    }
-  }, [messages]);
 
   // Автопрокрутка к последнему сообщению.
   useEffect(() => {
