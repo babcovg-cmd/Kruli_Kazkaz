@@ -16,6 +16,22 @@ const GREETING: Msg = {
 
 const STORAGE_KEY = "kk-chat-history";
 
+// Модели просят отвечать без Markdown, но подстраховываемся: **текст** рисуем
+// жирным, а «* » / «- » в начале строки превращаем в «• », чтобы звёздочки
+// не торчали в чате сырым текстом.
+function renderContent(text: string): React.ReactNode {
+  return text.split("\n").map((rawLine, li, lines) => {
+    const line = rawLine.replace(/^(\s*)[*-]\s+/, "$1• ");
+    const parts = line.split(/\*\*([^*]+)\*\*/g); // нечётные индексы — жирные фрагменты
+    return (
+      <span key={li}>
+        {parts.map((p, i) => (i % 2 ? <b key={i}>{p}</b> : p))}
+        {li < lines.length - 1 ? "\n" : null}
+      </span>
+    );
+  });
+}
+
 export default function AIWidget({ phone }: { phone: string }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
@@ -126,7 +142,9 @@ export default function AIWidget({ phone }: { phone: string }) {
         <div ref={scrollRef} className="ai-scroll">
           {messages.map((m, i) => (
             <div key={i} className={`ai-msg ${m.role === "user" ? "me" : "bot"}`}>
-              {m.content || (
+              {m.content ? (
+                renderContent(m.content)
+              ) : (
                 <span className="typing">
                   <i />
                   <i />
