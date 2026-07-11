@@ -17,15 +17,54 @@ const GREETING: Msg = {
 const STORAGE_KEY = "kk-chat-history";
 
 // Модели просят отвечать без Markdown, но подстраховываемся: **текст** рисуем
-// жирным, а «* » / «- » в начале строки превращаем в «• », чтобы звёздочки
-// не торчали в чате сырым текстом.
+// жирным, «* » / «- » в начале строки превращаем в «• », ссылки делаем
+// кликабельными — и markdown-формат [текст](/tours/...), и голые пути /tours/….
+const linkStyle: React.CSSProperties = { color: "inherit", textDecoration: "underline", fontWeight: 600 };
+
+// Жирный **…** + автоссылки на страницы туров в обычном тексте.
+function renderBoldAndPaths(text: string, keyBase: string): React.ReactNode[] {
+  return text.split(/\*\*([^*]+)\*\*/g).map((seg, i) => {
+    if (i % 2) return <b key={`${keyBase}-b${i}`}>{seg}</b>;
+    // Голые пути вида /tours/slug превращаем в ссылки.
+    return seg.split(/(\/tours\/[a-z0-9-]+)/g).map((p, j) =>
+      j % 2 ? (
+        <a key={`${keyBase}-p${i}-${j}`} href={p} style={linkStyle}>
+          {p}
+        </a>
+      ) : (
+        p
+      )
+    );
+  });
+}
+
+// Markdown-ссылки [текст](url) → <a>, остальное — через renderBoldAndPaths.
+function renderInline(text: string, keyBase: string): React.ReactNode[] {
+  const out: React.ReactNode[] = [];
+  const re = /\[([^\]]+)\]\(([^()\s]+)\)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let k = 0;
+  while ((m = re.exec(text))) {
+    if (m.index > last) out.push(...renderBoldAndPaths(text.slice(last, m.index), `${keyBase}-t${k}`));
+    out.push(
+      <a key={`${keyBase}-l${k}`} href={m[2]} style={linkStyle}>
+        {m[1].replace(/\*\*/g, "")}
+      </a>
+    );
+    last = m.index + m[0].length;
+    k += 1;
+  }
+  if (last < text.length) out.push(...renderBoldAndPaths(text.slice(last), `${keyBase}-e`));
+  return out;
+}
+
 function renderContent(text: string): React.ReactNode {
   return text.split("\n").map((rawLine, li, lines) => {
     const line = rawLine.replace(/^(\s*)[*-]\s+/, "$1• ");
-    const parts = line.split(/\*\*([^*]+)\*\*/g); // нечётные индексы — жирные фрагменты
     return (
       <span key={li}>
-        {parts.map((p, i) => (i % 2 ? <b key={i}>{p}</b> : p))}
+        {renderInline(line, `l${li}`)}
         {li < lines.length - 1 ? "\n" : null}
       </span>
     );
